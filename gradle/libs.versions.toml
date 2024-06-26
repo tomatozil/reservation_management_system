@@ -1,0 +1,16 @@
+[versions]
+spring-boot = '3.3.1'
+dependency-management = '1.1.5'
+jbcrypt = '0.4'
+jsonwebtoken = '0.11.2'
+
+# 잘 안돼서 plugin은 pluginManagement에게 맡겼어요
+[plugins]
+spring-boot = {id = 'org.springframework.boot', version.ref = "spring-boot"}
+dependency-management = {id = 'io.spring.dependency-management', version.ref = 'dependency-management'}
+
+[libraries]
+jbcrypt = {module = 'org.mindrot:jbcrypt', version.ref = 'jbcrypt'}
+jjwt-api = {module = 'io.jsonwebtoken:jjwt-api', version.ref = 'jsonwebtoken'}
+jjwt-impl = {module = 'io.jsonwebtoken:jjwt-impl', version.ref = 'jsonwebtoken'}
+jjwt-jackson = {module = 'io.jsonwebtoken:jjwt-jackson', version.ref = 'jsonwebtoken'}
