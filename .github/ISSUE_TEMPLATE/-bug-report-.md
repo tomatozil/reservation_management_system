@@ -7,10 +7,10 @@ assignees: tomatozil
 
 ---
 
-####what kind of bug?
+#### what kind of bug?
 
-####to-do list
-[ ] TODO
-[ ] TODO
+#### to-do list
+- [ ] TODO
+- [ ] TODO
 
-####references
+#### references

@@ -7,10 +7,10 @@ assignees: tomatozil
 
 ---
 
-####what features?
+#### what features?
 
-####to-do list
-[ ] TODO
-[ ] TODO
+#### to-do list
+- [ ] TODO
+- [ ] TODO
 
-####references
+#### references
