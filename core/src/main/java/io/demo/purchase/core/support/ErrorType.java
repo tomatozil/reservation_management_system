@@ -1,6 +1,6 @@
 package io.demo.purchase.core.support;
 
 public interface ErrorType {
-    Integer getStatus();
+    Integer getStatusCode();
     String getMessage();
 }

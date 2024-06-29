@@ -4,4 +4,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository {
+    Integer add(String name, String email, String password);
 }

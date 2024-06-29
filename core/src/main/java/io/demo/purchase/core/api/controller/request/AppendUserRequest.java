@@ -1,25 +1,35 @@
 package io.demo.purchase.core.api.controller.request;
 
-import io.demo.purchase.core.domain.user.UserSignUpInfo;
+import io.demo.purchase.core.domain.user.UserSignupInfo;
+import io.demo.purchase.core.support.Constants;
 import io.demo.purchase.core.support.CustomException;
 import lombok.Setter;
 
-import static io.demo.purchase.core.domain.user.error.CoreDomainErrorType.BAD_REQUEST_DATA;
+import static io.demo.purchase.core.domain.error.CoreDomainErrorType.BAD_REQUEST_DATA;
 
 @Setter
 public class AppendUserRequest {
-    private String name;
-    private String password;
-    private String email;
+    String name;
+    String email;
+    String password;
 
-    public UserSignUpInfo toUserAppender() {
-        // name, password, email 검증 및 변환
-        if (name.length() > 10)
+    public AppendUserRequest(String name, String password, String email) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
+
+    public UserSignupInfo toUserSignupInfo() {
+        // name, password, email 검증
+        if (name.length() > 10
+                || !Constants.PASSWORD_REGEX.isMatched(password)
+                || !Constants.EMAIL_REGEX.isMatched(email))
             throw new CustomException(BAD_REQUEST_DATA);
-        return new UserSignUpInfo(
+
+        return new UserSignupInfo(
                 name,
-                password,
-                email
+                email,
+                password
         );
     }
 }

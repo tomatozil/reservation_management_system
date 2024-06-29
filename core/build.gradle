@@ -7,10 +7,9 @@ tasks.named('jar') {
 }
 
 dependencies {
-    implementation(project(':storage:db-main'))
+//    implementation(project(':storage'))
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.projectlombok:lombok'
 
     implementation libs.jbcrypt
 

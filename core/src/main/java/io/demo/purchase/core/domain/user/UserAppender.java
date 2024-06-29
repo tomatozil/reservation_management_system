@@ -7,11 +7,17 @@ import org.springframework.stereotype.Component;
 public class UserAppender {
 
     private final UserRepository userRepository;
+    private final BcryptEncoder encoder;
 
     @Autowired
-    public UserAppender(UserRepository userRepository) {
+    public UserAppender(UserRepository userRepository, BcryptEncoder encoder) {
         this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
-    public String append(UserSignUpInfo userSignUpInfo) { return ""; }
+    public Integer append(String name, String email, String password) {
+        // password encrypt
+        String encryptedPassword = encoder.hashPassword(password);
+        return userRepository.add(name, email, encryptedPassword);
+    }
 }

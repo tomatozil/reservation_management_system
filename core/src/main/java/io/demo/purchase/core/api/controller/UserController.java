@@ -2,6 +2,8 @@ package io.demo.purchase.core.api.controller;
 
 import io.demo.purchase.core.api.controller.request.AppendUserRequest;
 import io.demo.purchase.core.domain.user.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +21,10 @@ public class UserController {
         this.userService = userService;
     }
 
-
     @PostMapping("/signUp")
-    public void signUp(@RequestBody AppendUserRequest request) {
-        // 생성하고 uuid 받기
-        String uuid = userService.newUser(request.toUserAppender());
-        // 쿠키에 담기? 응답에 담기?
+    public void signup(@RequestBody AppendUserRequest request, HttpServletResponse response) {
+        String accessToken = userService.newUser(request.toUserSignupInfo());
+        // 쿠키에 access token 담기
+        response.addCookie(new Cookie("accessToken", accessToken));
     }
 }
