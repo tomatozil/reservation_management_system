@@ -1,19 +1,20 @@
-tasks.named('bootJar') {
+tasks.named("bootJar") {
     enabled = true
 }
 
-tasks.named('jar') {
+tasks.named("jar") {
     enabled = false
 }
 
 dependencies {
-//    implementation(project(':storage'))
+    runtimeOnly project(':storage')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    implementation libs.jbcrypt
+    implementation 'org.mindrot:jbcrypt:0.4'
 
-    implementation libs.jjwt.api
-    runtimeOnly libs.jjwt.impl
-    runtimeOnly libs.jjwt.jackson
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 }

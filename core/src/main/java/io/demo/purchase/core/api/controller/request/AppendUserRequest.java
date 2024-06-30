@@ -3,9 +3,8 @@ package io.demo.purchase.core.api.controller.request;
 import io.demo.purchase.core.domain.user.UserSignupInfo;
 import io.demo.purchase.core.support.Constants;
 import io.demo.purchase.core.support.CustomException;
+import io.demo.purchase.core.domain.error.CoreDomainErrorType;
 import lombok.Setter;
-
-import static io.demo.purchase.core.domain.error.CoreDomainErrorType.BAD_REQUEST_DATA;
 
 @Setter
 public class AppendUserRequest {
@@ -24,7 +23,7 @@ public class AppendUserRequest {
         if (name.length() > 10
                 || !Constants.PASSWORD_REGEX.isMatched(password)
                 || !Constants.EMAIL_REGEX.isMatched(email))
-            throw new CustomException(BAD_REQUEST_DATA);
+            throw new CustomException(CoreDomainErrorType.BAD_REQUEST_DATA);
 
         return new UserSignupInfo(
                 name,

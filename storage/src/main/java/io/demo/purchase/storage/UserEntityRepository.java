@@ -1,4 +1,4 @@
-package io.demo.purchase.storage.db.main;
+package io.demo.purchase.storage;
 
 import io.demo.purchase.core.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

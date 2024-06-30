@@ -1,4 +1,4 @@
-package io.demo.purchase.storage.db.main;
+package io.demo.purchase.storage;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
