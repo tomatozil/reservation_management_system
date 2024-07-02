@@ -4,5 +4,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository {
-    Integer add(String name, String email, String password);
+    long add(String name, String email, String password);
+    User find(long userId);
 }

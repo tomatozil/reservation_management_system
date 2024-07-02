@@ -1,10 +1,11 @@
 package io.demo.purchase.core.domain.error;
 
-import io.demo.purchase.core.support.ErrorType;
+import io.demo.purchase.support.ErrorType;
 import org.springframework.http.HttpStatus;
 
 public enum CoreDomainErrorType implements ErrorType {
 
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증에 실패했습니다"),
     BAD_REQUEST_DATA(HttpStatus.BAD_REQUEST, "요청 데이터가 올바르지 않습니다");
 
     private Integer statusCode;

@@ -1,18 +1,18 @@
 package io.demo.purchase.core.api.controller.request;
 
 import io.demo.purchase.core.domain.user.UserSignupInfo;
-import io.demo.purchase.core.support.Constants;
-import io.demo.purchase.core.support.CustomException;
+import io.demo.purchase.support.Constants;
+import io.demo.purchase.support.CustomException;
 import io.demo.purchase.core.domain.error.CoreDomainErrorType;
 import lombok.Setter;
 
 @Setter
-public class AppendUserRequest {
+public class SignupUserRequest {
     String name;
     String email;
     String password;
 
-    public AppendUserRequest(String name, String password, String email) {
+    public SignupUserRequest(String name, String password, String email) {
         this.name = name;
         this.password = password;
         this.email = email;

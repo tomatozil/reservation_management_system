@@ -1,4 +1,4 @@
-package io.demo.purchase.core.support;
+package io.demo.purchase.support;
 
 public class CustomException extends RuntimeException {
     private ErrorType errorType;

@@ -1,6 +1,3 @@
 rootProject.name = 'purchase'
 
-include(
-        'core',
-        'storage'
-)
+include('core')
