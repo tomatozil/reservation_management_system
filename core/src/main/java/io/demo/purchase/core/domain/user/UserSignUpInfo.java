@@ -3,14 +3,14 @@ package io.demo.purchase.core.domain.user;
 import lombok.Getter;
 
 @Getter
-public class UserSignUpInfo {
-    private String name;
-    private String password;
-    private String email;
+public class UserSignupInfo {
+    String name;
+    String email;
+    String password;
 
-    public UserSignUpInfo(String name, String password, String email) {
+    public UserSignupInfo(String name, String email, String password) {
         this.name = name;
-        this.password = password;
         this.email = email;
+        this.password = password;
     }
 }

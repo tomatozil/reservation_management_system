@@ -1,0 +1,15 @@
+spring.application.name: purchase
+spring.profiles.active: local
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/mydatabase
+    username: jiyun
+    password: pwpwpw
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+---

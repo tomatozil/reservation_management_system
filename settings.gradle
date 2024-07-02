@@ -1,28 +1,3 @@
-pluginManagement {
-    resolutionStrategy {
-        eachPlugin { pluginRequest ->
-            String requestedIdId = pluginRequest.requested.id.id;
-            if (requestedIdId == 'org.springframework.boot') {
-                useVersion(springBootVersion)
-            } else if (requestedIdId == 'io.spring.dependency-management') {
-                useVersion(springDependencyManagementVersion)
-            }
-        }
-    }
-}
-
-// 왜 from을 한번만 호출하라는 에러가 날까?
-//dependencyResolutionManagement {
-//    versionCatalogs {
-//        libs {
-//            from(files('gradle/libs.versions.toml'))
-//        }
-//    }
-//}
-
 rootProject.name = 'purchase'
 
-include(
-        'core',
-        'storage:db-main'
-)
+include('core')

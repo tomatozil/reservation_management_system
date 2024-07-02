@@ -1,0 +1,16 @@
+spring.config.activate.on-profile: local
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/mydatabase
+    username: jiyun
+    password: pwpwpw
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+---
