@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 abstract class BaseEntity {
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -23,7 +23,5 @@ abstract class BaseEntity {
 
     public BaseEntity() {
         this.createdAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
-        this.deletedAt = LocalDateTime.now();
     }
 }
