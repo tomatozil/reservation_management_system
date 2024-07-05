@@ -1,8 +1,5 @@
 package io.demo.purchase.core.api.controller.response;
 
-import lombok.Getter;
-
-//@Getter
 public class UserTokenInfo {
     long userId;
     String accessToken;
@@ -12,15 +9,15 @@ public class UserTokenInfo {
         this.accessToken = accessToken;
     }
 
-    public AppendUserResponse toResponse(long userId) {
-        return new AppendUserResponse(userId);
-    }
-
     public long getUserId() {
         return userId;
     }
 
     public String getAccessToken() {
         return accessToken;
+    }
+
+    public AppendUserResponse toResponse() {
+        return new AppendUserResponse(userId);
     }
 }

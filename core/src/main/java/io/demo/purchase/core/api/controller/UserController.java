@@ -33,7 +33,7 @@ public class UserController {
         // 쿠키에 access token 담기
         response.addCookie(new Cookie("accessToken", userTokenInfo.getAccessToken()));
 
-        return userTokenInfo.toResponse(userTokenInfo.getUserId());
+        return userTokenInfo.toResponse();
     }
 
     @GetMapping("/user/signin")

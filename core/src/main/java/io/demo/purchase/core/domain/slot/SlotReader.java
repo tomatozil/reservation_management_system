@@ -1,5 +1,6 @@
 package io.demo.purchase.core.domain.slot;
 
+import io.demo.purchase.storage.SlotEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -7,22 +8,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
-public class SlotService {
+public class SlotReader {
 
-    private final SlotReader slotReader;
+    private final SlotRepository slotRepository;
 
     @Autowired
-    public SlotService(SlotReader slotReader) {
-        this.slotReader = slotReader;
+    public SlotReader(SlotRepository slotRepository) {
+        this.slotRepository = slotRepository;
     }
 
-    // slot 리스트 (근데 이제 날짜별)
     public List<Slot> findList(LocalDateTime date) {
-        return slotReader.findList(date);
+        return slotRepository.findList(date);
     }
 
-    // slot 상세 정보
     public SlotDetail find(Long slotId) {
-        return slotReader.find(slotId);
+        return slotRepository.find(slotId);
     }
 }

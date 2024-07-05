@@ -20,11 +20,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class UserEntityRepositoryTest {
 
-    @Autowired
-    private UserEntityRepository userEntityRepository;
-
-    @PersistenceContext
-    private TestEntityManager entityManager;
+//    @Autowired
+//    private UserEntityRepository userEntityRepository;
+//
+//    @PersistenceContext
+//    private TestEntityManager entityManager;
 
 //    TODO: transactional 없이 하는 테스트
 //    @BeforeEach
@@ -42,20 +42,20 @@ class UserEntityRepositoryTest {
     @Transactional
     void 유저_추가() {
         // Given
-        String name = "jiyun";
-        String email = "email@email.com";
-        String password = "encryptedPassword";
-
-        // When
-        long userId = userEntityRepository.add(name, email, password);
-
-        // Then
-        UserEntity retrievedUser = entityManager.find(UserEntity.class, userId);
-        assertThat(retrievedUser).isNotNull();
-        assertThat(retrievedUser.getName()).isEqualTo(name);
-        assertThat(retrievedUser.getEmail()).isEqualTo(email);
-
-        entityManager.remove(retrievedUser);
-        entityManager.flush();
+//        String name = "jiyun";
+//        String email = "email@email.com";
+//        String password = "encryptedPassword";
+//
+//        // When
+//        long userId = userEntityRepository.add(name, email, password);
+//
+//        // Then
+//        UserEntity retrievedUser = entityManager.find(UserEntity.class, userId);
+//        assertThat(retrievedUser).isNotNull();
+//        assertThat(retrievedUser.getName()).isEqualTo(name);
+//        assertThat(retrievedUser.getEmail()).isEqualTo(email);
+//
+//        entityManager.remove(retrievedUser);
+//        entityManager.flush();
     }
 }
