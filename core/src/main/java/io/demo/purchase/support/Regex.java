@@ -2,13 +2,13 @@ package io.demo.purchase.support;
 
 import java.util.regex.Pattern;
 
-public enum Constants {
+public enum Regex {
     EMAIL_REGEX("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"),
-    PASSWORD_REGEX("^[A-Za-z\\d!@#$%^&*]{8,}$");
+    PASSWORD_REGEX("^[A-Za-z\\d!@#$%^&*]{6,}$");
 
     private String pattern;
 
-    Constants(String pattern) {
+    Regex(String pattern) {
         this.pattern = pattern;
     }
 
@@ -17,6 +17,6 @@ public enum Constants {
     }
 
     public boolean isMatched(String input) {
-        return !Pattern.matches(this.pattern, input);
+        return Pattern.matches(this.pattern, input);
     }
 }
