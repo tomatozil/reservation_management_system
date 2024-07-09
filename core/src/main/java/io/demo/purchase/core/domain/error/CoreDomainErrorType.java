@@ -7,6 +7,7 @@ public enum CoreDomainErrorType implements ErrorType {
 
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증에 실패했습니다"),
     BAD_REQUEST_DATA(HttpStatus.BAD_REQUEST, "요청 데이터가 올바르지 않습니다"),
+    REQUEST_FAILED(HttpStatus.I_AM_A_TEAPOT, "요청을 처리할 수 없습니다"),
     NOT_FOUND(HttpStatus.NOT_FOUND, "요청 데이터를 찾지 못했습니다");
 
     private Integer statusCode;

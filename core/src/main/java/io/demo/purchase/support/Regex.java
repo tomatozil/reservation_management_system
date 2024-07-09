@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public enum Regex {
     EMAIL_REGEX("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"),
-    PASSWORD_REGEX("^[A-Za-z\\d!@#$%^&*]{8,}$");
+    PASSWORD_REGEX("^[A-Za-z\\d!@#$%^&*]{6,}$");
 
     private String pattern;
 
@@ -17,6 +17,6 @@ public enum Regex {
     }
 
     public boolean isMatched(String input) {
-        return !Pattern.matches(this.pattern, input);
+        return Pattern.matches(this.pattern, input);
     }
 }

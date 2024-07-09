@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -21,6 +20,7 @@ import java.util.List;
 class SlotReaderTest {
 
     private static final Logger log = LoggerFactory.getLogger(SlotReaderTest.class);
+
     @Autowired
     SlotReader slotReader;
 
@@ -32,13 +32,8 @@ class SlotReaderTest {
     void findList() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate date = LocalDate.parse("20240710", formatter);
-        LocalDateTime localDateTime = date.atStartOfDay();
-        log.info(String.valueOf(localDateTime));
-        List<Slot> slots = slotReader.findList(localDateTime);
+        log.info(String.valueOf(date));
+        List<SlotSimple> slots = slotReader.findList(date);
         log.info(slots.toString());
-    }
-
-    @Test
-    void find() {
     }
 }

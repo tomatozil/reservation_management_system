@@ -12,7 +12,15 @@ public class UserReader {
         this.userRepository = userRepository;
     }
 
-    public User find(long userId) {
+    public User findById(long userId) {
         return userRepository.find(userId);
+    }
+
+    public User findExist(String name, String email) {
+        return userRepository.find(name, email);
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.find(email);
     }
 }

@@ -1,6 +1,5 @@
 package io.demo.purchase.core.api.controller.response;
 
-import io.demo.purchase.core.domain.slot.SlotDetail;
 import io.demo.purchase.support.WorkoutType;
 import lombok.Getter;
 

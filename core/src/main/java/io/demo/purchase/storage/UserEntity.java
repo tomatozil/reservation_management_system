@@ -2,16 +2,15 @@ package io.demo.purchase.storage;
 
 import io.demo.purchase.core.domain.user.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "user")
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-class UserEntity extends BaseEntity {
+public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,6 +18,7 @@ class UserEntity extends BaseEntity {
     @Column(length = 10, nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
