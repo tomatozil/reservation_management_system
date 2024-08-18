@@ -1,19 +1,21 @@
 package io.demo.purchase.core.domain.booking;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.demo.purchase.storage.*;
 import io.demo.purchase.support.CustomException;
 import io.demo.purchase.support.WorkoutType;
+
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,7 +45,12 @@ class BookingAppenderTest {
     SlotEntity slot;
     StockEntity stock;
     //user5
-    UserEntity user;
+    UserEntity user1;
+    UserEntity user2;
+    UserEntity user3;
+    UserEntity user4;
+    UserEntity user5;
+    List<UserEntity> users = new ArrayList<>();
 
     @BeforeEach
     void init() {
@@ -59,20 +66,46 @@ class BookingAppenderTest {
 
         stock = this.stockJpaRepository.save(StockEntity.builder()
                 .slotId(slot.getId())
-                .total(1L)
+                .total(2L)
                 .build());
 
-        user = this.userJpaRepository.save(UserEntity.builder()
+        user1 = this.userJpaRepository.save(UserEntity.builder()
                 .name("cookie")
                 .email("cookie@cookie.com")
                 .password("fake-password")
                 .build());
+        user2 = this.userJpaRepository.save(UserEntity.builder()
+                .name("phamhanni")
+                .email("phamhanni@phamhanni.com")
+                .password("fake-password")
+                .build());
+        user3 = this.userJpaRepository.save(UserEntity.builder()
+                .name("daniel")
+                .email("daniel@daniel.com")
+                .password("fake-password")
+                .build());
+        user4 = this.userJpaRepository.save(UserEntity.builder()
+                .name("minji")
+                .email("minji@minji.com")
+                .password("fake-password")
+                .build());
+        user5 = this.userJpaRepository.save(UserEntity.builder()
+                .name("karina")
+                .email("karina@karina.com")
+                .password("fake-password")
+                .build());
+        users.add(user1);
+        users.add(user2);
+        users.add(user3);
+        users.add(user4);
+        users.add(user5);
     }
 
     @AfterEach
     void cleanUp() {
-        slotJpaRepository.deleteById(slot.getId());
-        stockJpaRepository.deleteById(stock.getId());
+        slotJpaRepository.delete(slot);
+        stockJpaRepository.delete(stock);
+        userJpaRepository.deleteAll(users);
     }
 
     @Test
@@ -95,16 +128,45 @@ class BookingAppenderTest {
         // user 5 -> member and book slot1 failed
         Long bookingId = bookingAppender.append(3L, slot.getId());
 
-        assertThatThrownBy(() -> bookingAppender.append(user.getId(), slot.getId()))
+        assertThatThrownBy(() -> bookingAppender.append(user1.getId(), slot.getId()))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("인원 초과로 예약이 불가능합니다");
 
-        bookingJpaRepository.deleteById(bookingId);
+        int result = bookingJpaRepository.deleteByIdQuery(bookingId);
     }
 
     @Test
-    @DisplayName("두명이 동시에?! 남은 한자리룰 예약할 때")
-    void appendTestConcurrency() {
-        // test
+    @DisplayName("다섯명이 동시에?! 남은 두자리룰 예약할 때")
+    void appendConcurrencyTest() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(5);
+
+        List<ParticipateWorker> workers = users.stream()
+                .map((user) -> new ParticipateWorker(user, countDownLatch))
+                .toList();
+
+        workers.forEach((worker) -> new Thread(worker).start());
+        countDownLatch.await();
+
+        List<BookingEntity> bookings = bookingJpaRepository.findBySlotId(slot.getId());
+
+        long size = bookings.size();
+        assertThat(size).isEqualTo(2);
+    }
+
+    private class ParticipateWorker implements Runnable {
+        private UserEntity user;
+        private CountDownLatch countDownLatch;
+
+        public ParticipateWorker(UserEntity user, CountDownLatch countDownLatch) {
+            this.user = user;
+            this.countDownLatch = countDownLatch;
+        }
+
+        @Override
+        public void run() {
+            log.info("thread now -> {}", Thread.currentThread().getName());
+            bookingAppender.append(this.user.getId(), slot.getId());
+            countDownLatch.countDown();
+        }
     }
 }

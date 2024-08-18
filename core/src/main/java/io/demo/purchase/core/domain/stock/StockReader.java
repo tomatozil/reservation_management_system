@@ -18,6 +18,7 @@ public class StockReader {
     }
 
     public long findQuantity(long slotId) {
+        // 유효한 slot인지 확인
         Slot slot = slotReader.find(slotId);
 
         return stockRepository.findQuantity(slot.getId());

@@ -3,6 +3,8 @@ package io.demo.purchase.core.domain.booking;
 import io.demo.purchase.core.domain.error.CoreDomainErrorType;
 import io.demo.purchase.core.domain.stock.StockReader;
 import io.demo.purchase.support.CustomException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BookingAppender {
 
+    private static final Logger log = LoggerFactory.getLogger(BookingAppender.class);
     private final StockReader stockReader;
     private final BookingReader bookingReader;
     private final BookingRepository bookingRepository; // writer ?
@@ -20,6 +23,7 @@ public class BookingAppender {
         this.bookingReader = bookingReader;
         this.bookingRepository = bookingRepository;
     }
+
 
     public long append(long userId, long slotId) {
         // total stock check
@@ -34,15 +38,28 @@ public class BookingAppender {
             }
         }
 
-        // current booking count
-        long cur = bookingReader.count(slotId);
+        long bookingId;
+        synchronized (this) {
+            long cur = bookingReader.count(slotId);
+            log.info("and booking count -> {}", cur);
 
-        if (cur >= total) {
-            throw new CustomException(CoreDomainErrorType.REQUEST_FAILED, "인원 초과로 예약이 불가능합니다");
+            if (cur >= total) {
+                throw new CustomException(CoreDomainErrorType.REQUEST_FAILED, "인원 초과로 예약이 불가능합니다");
+            }
+
+            // user id, slot id write
+            bookingId = bookingRepository.add(userId, slotId);
         }
 
-        // user id, slot id write
-        long bookingId = bookingRepository.add(userId, slotId);
+//        long cur = bookingReader.count(slotId);
+//        log.info("and booking count -> {}", cur);
+//
+//        if (cur >= total) {
+//            throw new CustomException(CoreDomainErrorType.REQUEST_FAILED, "인원 초과로 예약이 불가능합니다");
+//        }
+//
+//        // user id, slot id write
+//        long bookingId = bookingRepository.add(userId, slotId);
         return bookingId;
     }
 }
