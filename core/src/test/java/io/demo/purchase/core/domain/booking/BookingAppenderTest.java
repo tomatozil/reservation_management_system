@@ -1,6 +1,7 @@
 package io.demo.purchase.core.domain.booking;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.demo.purchase.core.domain.error.CoreDomainErrorType;
 import io.demo.purchase.storage.*;
 import io.demo.purchase.support.CustomException;
 import io.demo.purchase.support.WorkoutType;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
@@ -66,6 +68,7 @@ class BookingAppenderTest {
 
         stock = this.stockJpaRepository.save(StockEntity.builder()
                 .slotId(slot.getId())
+                .stock(0L)
                 .total(2L)
                 .build());
 
@@ -101,20 +104,19 @@ class BookingAppenderTest {
         users.add(user5);
     }
 
-    @AfterEach
-    void cleanUp() {
-        slotJpaRepository.delete(slot);
-        stockJpaRepository.delete(stock);
-        userJpaRepository.deleteAll(users);
-    }
+//    @AfterEach
+//    void cleanUp() {
+//        slotJpaRepository.delete(slot);
+//        stockJpaRepository.delete(stock);
+//        userJpaRepository.deleteAll(users);
+//    }
 
     @Test
     @DisplayName("slot 예약에 성공")
     void appendTestSuccess() {
         // user3 -> book slot1 ok
-        log.info("slotId: "+ slot.getId());
 
-        Long bookingId = bookingAppender.append(3L, slot.getId());
+        Long bookingId = bookingAppender.append(user3.getId(), slot.getId());
 
         assertThat(bookingId).isNotNull();
 
@@ -126,13 +128,15 @@ class BookingAppenderTest {
     void appendTestFailed() {
         // user 3 -> book slot1 ok
         // user 5 -> member and book slot1 failed
-        Long bookingId = bookingAppender.append(3L, slot.getId());
+        Long bookingId2 = bookingAppender.append(user2.getId(), slot.getId());
+        Long bookingId1 = bookingAppender.append(user3.getId(), slot.getId());
 
         assertThatThrownBy(() -> bookingAppender.append(user1.getId(), slot.getId()))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("인원 초과로 예약이 불가능합니다");
 
-        int result = bookingJpaRepository.deleteByIdQuery(bookingId);
+        bookingJpaRepository.deleteByIdQuery(bookingId1);
+        bookingJpaRepository.deleteByIdQuery(bookingId2);
     }
 
     @Test
@@ -164,8 +168,11 @@ class BookingAppenderTest {
 
         @Override
         public void run() {
-            log.info("thread now -> {}", Thread.currentThread().getName());
-            bookingAppender.append(this.user.getId(), slot.getId());
+            try {
+                bookingAppender.append(this.user.getId(), slot.getId());
+            } catch (Exception e) {
+                log.info("Exception in thread {} io.demo.purchase.support.CustomException: {}", Thread.currentThread().getName(), e.getMessage());
+            }
             countDownLatch.countDown();
         }
     }
