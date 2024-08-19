@@ -2,11 +2,14 @@ package io.demo.purchase.storage;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.demo.purchase.core.domain.error.CoreDomainErrorType;
+import io.demo.purchase.core.domain.stock.Stock;
 import io.demo.purchase.core.domain.stock.StockRepository;
 import io.demo.purchase.support.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 class StockEntityRepository extends QuerydslRepositorySupport implements StockRepository {
@@ -22,16 +25,29 @@ class StockEntityRepository extends QuerydslRepositorySupport implements StockRe
     }
 
     @Override
-    public long findQuantity(long slotId) {
-        QStockEntity stockEntity = QStockEntity.stockEntity;
+    public Optional<Stock> findBySlotId(long slotId) {
+                QStockEntity stock = QStockEntity.stockEntity;
 
-        StockEntity stock = jpaQueryFactory.selectFrom(stockEntity)
-                .where(stockEntity.slotId.eq(slotId).and(stockEntity.deletedAt.isNull()))
-                .fetchFirst();
-        if (stock == null) {
-            throw new CustomException(CoreDomainErrorType.BAD_REQUEST_DATA, "요청 슬롯 수량 정보를 찾지 못했습니다");
-        }
+        Optional<StockEntity> optStockEntity = Optional.ofNullable(jpaQueryFactory.selectFrom(stock)
+                .where(stock.slotId.eq(slotId)
+                        .and(stock.deletedAt.isNull()))
+                .fetchFirst());
+//        Optional<StockEntity> optStockEntity = stockJpaRepository.findBySlotId(slotId);
 
-        return stock.getTotal();
+        return optStockEntity.map(StockEntity::toStock);
+    }
+
+    @Override
+    public StockEntity findById(long stockId) {
+        return stockJpaRepository.findById(stockId)
+                .orElseThrow(() -> new CustomException(CoreDomainErrorType.REQUEST_FAILED, "해당 재고를 찾을 수 없습니다"));
+    }
+
+    @Override
+    public void update(Stock newStock) {
+        StockEntity stockEntity = this.findById(newStock.getId());
+
+        stockEntity.updateStock(newStock.getStock());
+        stockJpaRepository.save(stockEntity);
     }
 }

@@ -1,5 +1,6 @@
 package io.demo.purchase.storage;
 
+import io.demo.purchase.core.domain.stock.Stock;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,5 +19,16 @@ public class StockEntity extends BaseEntity {
     private Long slotId;
 
     @Column(nullable = false)
+    private Long stock;
+
+    @Column(nullable = false)
     private Long total;
+
+    public Stock toStock() {
+        return new Stock(id, slotId, stock, total);
+    }
+
+    public void updateStock(long newStock) {
+        this.stock = newStock;
+    }
 }
