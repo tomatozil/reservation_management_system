@@ -29,15 +29,18 @@ services:
     env_file:
       - .env
   k6:
-    image: loadimpact/k6
+    build:
+      context: k6
+      dockerfile: Dockerfile
     container_name: k6
+    restart: always
     networks:
       - default
     depends_on:
       - java-application
-    volumes:
-      - ./k6:/scripts  # 로컬 디렉토리를 컨테이너의 /scripts 디렉토리로 마운트
-    entrypoint: ["k6", "run", "/scripts/your-test-script.js"]
+    environment:
+      - VUS=20
+      - DURATION=1m
 
 networks:
   default:
