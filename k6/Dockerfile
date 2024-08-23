@@ -9,8 +9,8 @@ RUN apk update &&  \
 
 COPY ./start_k6.sh /app/start_k6.sh
 
-RUN chmod +x /app/start_k6.sh
+RUN chmod 755 /app/start_k6.sh
 
-#ENTRYPOINT ["/sbin/tini", "--", "/app/start_k6.sh"]
+ENTRYPOINT ["/sbin/tini", "--", "/app/start_k6.sh"]
 
-CMD sleep infinity
+#CMD sleep infinity

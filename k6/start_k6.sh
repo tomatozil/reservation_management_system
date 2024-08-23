@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "Creating a new K6 test script..."
 docker run --rm -i -v $PWD:/app -w /app grafana/k6 new test_k6.js
