@@ -59,8 +59,8 @@ public class LonginArgumentResolver implements HandlerMethodArgumentResolver {
 
         // 쿠키 -> 유저 검색 -> User 반환 받기
         Long userId = jwtProvider.verifyToken(accessToken);
-//        User user = userReader.findById(userId);
+        User user = userReader.findById(userId);
 
-        return userId;
+        return user;
     }
 }

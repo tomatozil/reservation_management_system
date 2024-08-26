@@ -29,18 +29,6 @@ services:
     env_file:
       - .env
 
-  k6:
-    build:
-      context: k6
-      dockerfile: Dockerfile
-    container_name: k6
-    networks:
-      - default
-    depends_on:
-      - java-application
-    env_file:
-      - .env
-
 networks:
   default:
     driver: bridge
