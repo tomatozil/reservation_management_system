@@ -9,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-class UserAppenderTest {
+class UserWriterTest {
 
     @Autowired
-    UserAppender userAppender;
+    UserWriter userWriter;
     @Autowired
     private UserReader userReader;
 
@@ -34,7 +34,7 @@ class UserAppenderTest {
     @Transactional
     void appendTest() {
 
-        long userId = userAppender.append("jiyun", "email@email.com", "password");
+        long userId = userWriter.append("jiyun", "email@email.com", "password");
 
         User user = userReader.findById(userId);
 

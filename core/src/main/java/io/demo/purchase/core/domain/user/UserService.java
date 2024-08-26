@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserReader userReader;
-    private final UserAppender userAppender;
+    private final UserWriter userWriter;
 
     @Autowired
-    public UserService(UserReader userReader, UserAppender userAppender) {
+    public UserService(UserReader userReader, UserWriter userWriter) {
         this.userReader = userReader;
-        this.userAppender = userAppender;
+        this.userWriter = userWriter;
     }
 
     public long add(UserSignupInfo userSignUpInfo) {
@@ -24,7 +24,7 @@ public class UserService {
 
         } catch (CustomException e) {
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST.value())
-                return userAppender.append(userSignUpInfo.name, userSignUpInfo.email, userSignUpInfo.password);
+                return userWriter.append(userSignUpInfo.name, userSignUpInfo.email, userSignUpInfo.password);
             else
                 throw e;
         }

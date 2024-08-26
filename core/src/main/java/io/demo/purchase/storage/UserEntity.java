@@ -1,6 +1,7 @@
 package io.demo.purchase.storage;
 
 import io.demo.purchase.core.domain.user.User;
+import io.demo.purchase.support.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,10 @@ public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RoleType role = RoleType.USER;
 
     @Column(length = 10, nullable = false)
     private String name;
@@ -33,6 +38,6 @@ public class UserEntity extends BaseEntity {
     }
 
     User toUser() {
-        return new User(id, name, email, password);
+        return new User(id, role, name, email, password);
     }
 }

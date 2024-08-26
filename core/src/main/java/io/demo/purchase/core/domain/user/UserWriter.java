@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserAppender {
+public class UserWriter {
 
     private final UserRepository userRepository;
     private final AuthProvider authProvider;
 
     @Autowired
-    public UserAppender(UserRepository userRepository, AuthProvider authProvider) {
+    public UserWriter(UserRepository userRepository, AuthProvider authProvider) {
         this.userRepository = userRepository;
         this.authProvider = authProvider;
     }

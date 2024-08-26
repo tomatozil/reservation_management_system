@@ -11,19 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
-public class BookingAppender {
+public class BookingWriter {
 
-    private static final Logger log = LoggerFactory.getLogger(BookingAppender.class);
+    private static final Logger log = LoggerFactory.getLogger(BookingWriter.class);
     private final StockReader stockReader;
     private final StockWriter stockWriter;
     private final BookingReader bookingReader;
     private final BookingRepository bookingRepository; // writer ?
 
     @Autowired
-    public BookingAppender(
+    public BookingWriter(
             StockReader stockReader,
             StockWriter stockWriter,
             BookingReader bookingReader,
