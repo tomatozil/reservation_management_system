@@ -5,6 +5,7 @@ import io.demo.purchase.core.domain.error.CoreDomainErrorType;
 import io.demo.purchase.core.domain.user.User;
 import io.demo.purchase.core.domain.user.UserRepository;
 import io.demo.purchase.support.CustomException;
+import io.demo.purchase.support.RoleType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -59,5 +60,14 @@ class UserEntityRepository extends QuerydslRepositorySupport implements UserRepo
             throw new CustomException(CoreDomainErrorType.BAD_REQUEST_DATA, "요청 유저를 찾지 못했습니다");
 
         return user.toUser();
+    }
+
+    @Override
+    public void updateRole(long userId, RoleType to) {
+        UserEntity userEntity = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(CoreDomainErrorType.BAD_REQUEST_DATA, "요청 유저를 찾지 못했습니다"));
+
+        userEntity.updateRole(to);
+        userJpaRepository.save(userEntity);
     }
 }

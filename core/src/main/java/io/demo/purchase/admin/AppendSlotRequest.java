@@ -11,7 +11,7 @@ import java.time.LocalTime;
 
 @Setter
 public class AppendSlotRequest {
-    Long coachId;
+    long coachId;
     WorkoutType workoutType;
 
     @DateTimeFormat(pattern = "yyyyMMdd")
@@ -20,10 +20,11 @@ public class AppendSlotRequest {
     @DateTimeFormat(pattern = "HH")
     LocalTime eventTime;
 
-    Long price;
+    long price;
+    long quantity;
 
     public AddSlot toAddSlot() {
         LocalDateTime eventDatetime = LocalDateTime.of(this.eventDate, this.eventTime);
-        return new AddSlot(coachId, workoutType, eventDatetime, price);
+        return new AddSlot(coachId, workoutType, eventDatetime, price, quantity);
     }
 }

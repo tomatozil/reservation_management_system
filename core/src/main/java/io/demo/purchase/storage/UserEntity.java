@@ -37,6 +37,10 @@ public class UserEntity extends BaseEntity {
         this.password = password;
     }
 
+    void updateRole(RoleType to) {
+        this.role = to;
+    }
+
     User toUser() {
         return new User(id, role, name, email, password);
     }

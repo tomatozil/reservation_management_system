@@ -19,10 +19,15 @@ public class StockEntity extends BaseEntity {
     private Long slotId;
 
     @Column(nullable = false)
-    private Long stock;
+    private Long stock = 0L;
 
     @Column(nullable = false)
     private Long total;
+
+    public StockEntity(long slotId, long total) {
+        this.slotId = slotId;
+        this.total = total;
+    }
 
     public Stock toStock() {
         return new Stock(id, slotId, stock, total);
@@ -30,5 +35,9 @@ public class StockEntity extends BaseEntity {
 
     public void updateStock(long newStock) {
         this.stock = newStock;
+    }
+
+    public static StockEntity of(long slotId, long quantity) {
+        return new StockEntity(slotId, quantity);
     }
 }

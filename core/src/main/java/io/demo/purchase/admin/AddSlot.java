@@ -7,15 +7,17 @@ import java.time.LocalDateTime;
 
 @Getter
 public class AddSlot {
-    Long coachId;
+    long coachId;
     WorkoutType workoutType;
     LocalDateTime eventDatetime;
-    Long price;
+    long price;
+    long quantity;
 
-    public AddSlot(Long coachId, WorkoutType workoutType, LocalDateTime eventDatetime, Long price) {
+    public AddSlot(long coachId, WorkoutType workoutType, LocalDateTime eventDatetime, long price, long quantity) {
         this.coachId = coachId;
         this.workoutType = workoutType;
         this.eventDatetime = eventDatetime;
         this.price = price;
+        this.quantity = quantity;
     }
 }

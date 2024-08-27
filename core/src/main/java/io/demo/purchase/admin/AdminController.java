@@ -1,18 +1,25 @@
 package io.demo.purchase.admin;
 
 import io.demo.purchase.core.domain.slot.SlotService;
+import io.demo.purchase.core.domain.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AdminController {
+
+    private final UserService userService;
     private final SlotService slotService;
 
     @Autowired
-    public AdminController(SlotService slotService) {
+    public AdminController(UserService userService, SlotService slotService) {
+        this.userService = userService;
         this.slotService = slotService;
+    }
+
+    @PutMapping("/admin/role/{userId}")
+    public void updateUserRole(@PathVariable("userId") Long userId, @RequestBody UpdateUserRoleRequest updateUserRoleRequest) {
+        userService.updateUserRole(userId, updateUserRoleRequest.getTo());
     }
 
     @PostMapping("/admin/slot")
@@ -21,5 +28,4 @@ public class AdminController {
 
         return new AppendSlotResponse(slotId);
     }
-
 }

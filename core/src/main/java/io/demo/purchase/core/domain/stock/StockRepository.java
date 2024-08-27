@@ -7,6 +7,7 @@ import java.util.Optional;
 
 @Repository
 public interface StockRepository {
+    void add(long slotId, long quantity);
     Optional<Stock> findBySlotId(long slotId);
 
     StockEntity findById(long stockId);
