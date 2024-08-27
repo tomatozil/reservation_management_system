@@ -1,9 +1,8 @@
 package io.demo.purchase.admin;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.demo.purchase.support.WorkoutType;
-import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,17 +13,17 @@ public class AppendSlotRequest {
     long coachId;
     WorkoutType workoutType;
 
-    @DateTimeFormat(pattern = "yyyyMMdd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
     LocalDate eventDate;
 
-    @DateTimeFormat(pattern = "HH")
+    @JsonFormat(pattern = "HH")
     LocalTime eventTime;
 
     long price;
     long quantity;
 
     public AddSlot toAddSlot() {
-        LocalDateTime eventDatetime = LocalDateTime.of(this.eventDate, this.eventTime);
+        LocalDateTime eventDatetime = LocalDateTime.of(this.eventDate, this.eventTime).withSecond(0).withNano(0);;
         return new AddSlot(coachId, workoutType, eventDatetime, price, quantity);
     }
 }

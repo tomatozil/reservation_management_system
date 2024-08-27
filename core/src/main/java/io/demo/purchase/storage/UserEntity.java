@@ -16,9 +16,10 @@ public class UserEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Builder.Default
+    @Column(name="role_type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private RoleType role = RoleType.USER;
+    private RoleType roleType = RoleType.USER;
 
     @Column(length = 10, nullable = false)
     private String name;
@@ -38,10 +39,10 @@ public class UserEntity extends BaseEntity {
     }
 
     void updateRole(RoleType to) {
-        this.role = to;
+        this.roleType = to;
     }
 
     User toUser() {
-        return new User(id, role, name, email, password);
+        return new User(id, roleType, name, email, password);
     }
 }

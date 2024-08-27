@@ -28,7 +28,11 @@ class UserEntityRepository extends QuerydslRepositorySupport implements UserRepo
 
     @Override
     public long add(String name, String email, String password) {
-        UserEntity user = userJpaRepository.save(new UserEntity(name, email, password));
+        UserEntity user = userJpaRepository.save(UserEntity.builder()
+                                                            .name(name)
+                                                            .email(email)
+                                                            .password(password)
+                                                            .build());
         return user.getId();
     }
 

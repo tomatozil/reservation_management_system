@@ -2,15 +2,21 @@ spring.application.name: purchase
 spring.profiles.active: local
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:mysql://localhost:3309/mydatabase
+    username: jiyun
+    password: pwpwpw
 
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
 
+logging:
+  level:
+    io.demo.purchase: debug
 ---

@@ -7,8 +7,7 @@ import io.demo.purchase.core.domain.user.UserReader;
 import io.demo.purchase.support.CustomException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -19,10 +18,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Arrays;
 
+@Slf4j
 @Component
 public class LonginArgumentResolver implements HandlerMethodArgumentResolver {
-
-    private static final Logger log = LoggerFactory.getLogger(LonginArgumentResolver.class);
 
     private final JwtProvider jwtProvider;
     private final UserReader userReader;

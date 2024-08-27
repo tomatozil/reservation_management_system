@@ -18,6 +18,7 @@ public class StockEntity extends BaseEntity {
     @Column(name = "slot_id", nullable = false)
     private Long slotId;
 
+    @Builder.Default
     @Column(nullable = false)
     private Long stock = 0L;
 
@@ -38,6 +39,9 @@ public class StockEntity extends BaseEntity {
     }
 
     public static StockEntity of(long slotId, long quantity) {
-        return new StockEntity(slotId, quantity);
+        return StockEntity.builder()
+                .slotId(slotId)
+                .total(quantity)
+                .build();
     }
 }

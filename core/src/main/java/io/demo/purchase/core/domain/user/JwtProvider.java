@@ -4,20 +4,30 @@ import io.demo.purchase.core.domain.error.CoreDomainErrorType;
 import io.demo.purchase.support.CustomException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Optional;
 
+@Slf4j
 @Component
 public class JwtProvider {
     private final SecretKey key;
 
-    protected JwtProvider() {
-        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    protected JwtProvider(@Value("${JWT_SECRET_KEY}") String secretKey) {
+        log.info("---- secret key: {} ----", secretKey);
+
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+
+        SignatureAlgorithm alg = SignatureAlgorithm.HS256;
+        this.key = new SecretKeySpec(keyBytes, alg.getJcaName());
     }
 
     public String generate(Long userId) {
@@ -30,13 +40,17 @@ public class JwtProvider {
     }
 
     public Long verifyToken(String accessToken) {
+        log.debug("---- accessToken: {} ----", accessToken);
+
         try {
+            log.info("--- key: {} ---", key);
             String subject = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(accessToken)
                     .getBody()
                     .getSubject();
+
             return Long.parseLong(subject);
 
         } catch (Exception e) {
