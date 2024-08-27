@@ -1,18 +1,18 @@
 services:
-  java-application:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: java-application
-    ports:
-      - 8080:8080
-    restart: always
-    networks:
-      - default
-    depends_on:
-      - mysql-db
-    env_file:
-      - .env
+#  java-application:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: java-application
+#    ports:
+#      - 8080:8080
+#    restart: always
+#    networks:
+#      - default
+#    depends_on:
+#      - mysql-db
+#    env_file:
+#      - .env
 
   mysql-db:
     build:

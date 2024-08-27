@@ -6,6 +6,7 @@ import io.demo.purchase.core.domain.slot.SlotSimple;
 import io.demo.purchase.core.domain.slot.Slot;
 import io.demo.purchase.core.domain.slot.SlotRepository;
 import io.demo.purchase.support.CustomException;
+import io.demo.purchase.support.WorkoutType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -28,6 +29,13 @@ class SlotEntityRepository extends QuerydslRepositorySupport implements SlotRepo
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
+
+    @Override
+    public Slot add(long coachId, WorkoutType workoutType, LocalDateTime eventDatetime, long price) {
+        SlotEntity slotEntity = slotJpaRepository.save(SlotEntity.of(coachId, workoutType, eventDatetime, price));
+
+        return slotEntity.toSlot();
+    }
 
     @Override
     public List<SlotSimple> findList(LocalDate date) { // 20240710 형식

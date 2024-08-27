@@ -1,16 +1,19 @@
 package io.demo.purchase.core.domain.user;
 
+import io.demo.purchase.core.domain.error.CoreDomainErrorType;
+import io.demo.purchase.support.CustomException;
+import io.demo.purchase.support.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserAppender {
+public class UserWriter {
 
     private final UserRepository userRepository;
     private final AuthProvider authProvider;
 
     @Autowired
-    public UserAppender(UserRepository userRepository, AuthProvider authProvider) {
+    public UserWriter(UserRepository userRepository, AuthProvider authProvider) {
         this.userRepository = userRepository;
         this.authProvider = authProvider;
     }
@@ -20,5 +23,14 @@ public class UserAppender {
         String encryptedPassword = authProvider.encryptPassword(password);
         // 저장하기
         return userRepository.add(name, email, encryptedPassword);
+    }
+
+    public void updateRole(long userId, RoleType to) {
+        User user = userRepository.find(userId);
+
+        if (user.role == to)
+            throw new CustomException(CoreDomainErrorType.REQUEST_FAILED, "역할 변경 요청이 실패했습니다");
+
+        userRepository.updateRole(userId, to);
     }
 }

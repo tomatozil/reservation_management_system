@@ -1,50 +1,33 @@
-package io.demo.purchase.support.argumentresolver;
+package io.demo.purchase.support.interceptor;
 
 import io.demo.purchase.core.domain.error.CoreDomainErrorType;
 import io.demo.purchase.core.domain.user.JwtProvider;
 import io.demo.purchase.core.domain.user.User;
 import io.demo.purchase.core.domain.user.UserReader;
 import io.demo.purchase.support.CustomException;
+import io.demo.purchase.support.RoleType;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Arrays;
 
-@Slf4j
 @Component
-public class LonginArgumentResolver implements HandlerMethodArgumentResolver {
-
+public class  AdminCheckInterceptor implements HandlerInterceptor {
     private final JwtProvider jwtProvider;
     private final UserReader userReader;
 
     @Autowired
-    public LonginArgumentResolver(final JwtProvider jwtProvider, UserReader userReader) {
+    public AdminCheckInterceptor(JwtProvider jwtProvider, UserReader userReader) {
         this.jwtProvider = jwtProvider;
         this.userReader = userReader;
     }
 
     @Override
-    public boolean supportsParameter(MethodParameter parameter) {
-        log.info("argument support 들어왔어요");
-        return parameter.hasParameterAnnotation(AuthorizedUser.class)
-                && User.class.isAssignableFrom(parameter.getParameterType());
-    }
-
-    @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        log.info("argument resolver 들어왔어요");
-
-        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-
-        // cookie 확인하기
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
         if (cookies == null)
             throw new CustomException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다");
@@ -54,11 +37,13 @@ public class LonginArgumentResolver implements HandlerMethodArgumentResolver {
                 .map(Cookie::getValue)
                 .orElseThrow(() -> new CustomException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다"));
 
-
         // 쿠키 -> 유저 검색 -> User 반환 받기
         Long userId = jwtProvider.verifyToken(accessToken);
         User user = userReader.findById(userId);
 
-        return user;
+        if (user.getRole() != RoleType.ADMIN)
+            throw new CustomException(CoreDomainErrorType.UNAUTHORIZED, "일반 사용자는 접근이 제한됩니다");
+
+        return true;
     }
 }

@@ -5,25 +5,21 @@ import io.demo.purchase.core.domain.stock.Stock;
 import io.demo.purchase.core.domain.stock.StockReader;
 import io.demo.purchase.core.domain.stock.StockWriter;
 import io.demo.purchase.support.CustomException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
+@Slf4j
 @Component
-public class BookingAppender {
-
-    private static final Logger log = LoggerFactory.getLogger(BookingAppender.class);
+public class BookingWriter {
     private final StockReader stockReader;
     private final StockWriter stockWriter;
     private final BookingReader bookingReader;
     private final BookingRepository bookingRepository; // writer ?
 
     @Autowired
-    public BookingAppender(
+    public BookingWriter(
             StockReader stockReader,
             StockWriter stockWriter,
             BookingReader bookingReader,

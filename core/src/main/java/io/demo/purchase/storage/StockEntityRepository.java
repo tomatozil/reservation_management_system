@@ -25,6 +25,11 @@ class StockEntityRepository extends QuerydslRepositorySupport implements StockRe
     }
 
     @Override
+    public void add(long slotId, long quantity) {
+        stockJpaRepository.save(StockEntity.of(slotId, quantity));
+    }
+
+    @Override
     public Optional<Stock> findBySlotId(long slotId) {
                 QStockEntity stock = QStockEntity.stockEntity;
 

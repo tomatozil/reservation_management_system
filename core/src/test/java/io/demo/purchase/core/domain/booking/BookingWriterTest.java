@@ -1,7 +1,5 @@
 package io.demo.purchase.core.domain.booking;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
 import io.demo.purchase.storage.*;
 import io.demo.purchase.support.CustomException;
 import io.demo.purchase.support.WorkoutType;
@@ -10,7 +8,6 @@ import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
@@ -21,22 +18,21 @@ import java.util.concurrent.CountDownLatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class BookingAppenderTest {
+class BookingWriterTest {
 
-    private static final Logger log = LoggerFactory.getLogger(BookingAppenderTest.class);
-    BookingAppender bookingAppender;
+    private static final Logger log = LoggerFactory.getLogger(BookingWriterTest.class);
+    BookingWriter bookingWriter;
     UserJpaRepository userJpaRepository;
     SlotJpaRepository slotJpaRepository;
     StockJpaRepository stockJpaRepository;
     BookingJpaRepository bookingJpaRepository;
 
     @Autowired
-    public BookingAppenderTest(BookingAppender bookingAppender,
-                               UserJpaRepository userJpaRepository, SlotJpaRepository slotJpaRepository, StockJpaRepository stockJpaRepository, BookingJpaRepository bookingJpaRepository) {
-        this.bookingAppender = bookingAppender;
+    public BookingWriterTest(BookingWriter bookingWriter,
+                             UserJpaRepository userJpaRepository, SlotJpaRepository slotJpaRepository, StockJpaRepository stockJpaRepository, BookingJpaRepository bookingJpaRepository) {
+        this.bookingWriter = bookingWriter;
         this.userJpaRepository = userJpaRepository;
         this.slotJpaRepository = slotJpaRepository;
         this.stockJpaRepository = stockJpaRepository;
@@ -116,7 +112,7 @@ class BookingAppenderTest {
     void appendTestSuccess() {
         // user3 -> book slot1 ok
 
-        Long bookingId = bookingAppender.append(user3.getId(), slot.getId());
+        Long bookingId = bookingWriter.append(user3.getId(), slot.getId());
 
         assertThat(bookingId).isNotNull();
 
@@ -128,10 +124,10 @@ class BookingAppenderTest {
     void appendTestFailed() {
         // user 3 -> book slot1 ok
         // user 5 -> member and book slot1 failed
-        Long bookingId2 = bookingAppender.append(user2.getId(), slot.getId());
-        Long bookingId1 = bookingAppender.append(user3.getId(), slot.getId());
+        Long bookingId2 = bookingWriter.append(user2.getId(), slot.getId());
+        Long bookingId1 = bookingWriter.append(user3.getId(), slot.getId());
 
-        assertThatThrownBy(() -> bookingAppender.append(user1.getId(), slot.getId()))
+        assertThatThrownBy(() -> bookingWriter.append(user1.getId(), slot.getId()))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("인원 초과로 예약이 불가능합니다");
 
@@ -169,7 +165,7 @@ class BookingAppenderTest {
         @Override
         public void run() {
             try {
-                bookingAppender.append(this.user.getId(), slot.getId());
+                bookingWriter.append(this.user.getId(), slot.getId());
             } catch (Exception e) {
                 log.info("Exception in thread {} io.demo.purchase.support.CustomException: {}", Thread.currentThread().getName(), e.getMessage());
             }

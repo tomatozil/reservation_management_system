@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookingService {
 
-    private final BookingAppender bookingAppender;
+    private final BookingWriter bookingWriter;
 
     @Autowired
-    public BookingService(BookingAppender bookingAppender) {
-        this.bookingAppender = bookingAppender;
+    public BookingService(BookingWriter bookingWriter) {
+        this.bookingWriter = bookingWriter;
     }
 
     public long add(long userId, long slotId) {
         // userid, slotid append
-        return bookingAppender.append(userId, slotId);
+        return bookingWriter.append(userId, slotId);
     }
 }
