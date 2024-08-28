@@ -1,10 +1,11 @@
 package io.demo.purchase.core.domain.booking;
 ;
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
+import io.demo.purchase.core.AlertUserRetryException;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.core.domain.stock.Stock;
 import io.demo.purchase.core.domain.stock.StockReader;
 import io.demo.purchase.core.domain.stock.StockWriter;
-import io.demo.purchase.support.CustomException;
+import io.demo.purchase.support.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class BookingWriter {
             // filtering if condition is true
             Stock stock = stockReader.findStock(slotId)
                     .filter(s -> s.getStock() < s.getTotal())
-                    .orElseThrow(() -> new CustomException(CoreDomainErrorType.REQUEST_FAILED, "인원 초과로 예약이 불가능합니다"));
+                    .orElseThrow(() -> new AlertUserRetryException(CoreDomainErrorType.REQUEST_FAILED, "인원 초과로 예약이 불가능합니다"));
 
             // update stock entity
             stock.setStock(stock.getStock()+1);

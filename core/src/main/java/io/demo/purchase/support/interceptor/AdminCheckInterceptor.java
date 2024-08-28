@@ -1,10 +1,10 @@
 package io.demo.purchase.support.interceptor;
 
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
+import io.demo.purchase.core.PermissionIssueException;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.core.domain.user.JwtProvider;
 import io.demo.purchase.core.domain.user.User;
 import io.demo.purchase.core.domain.user.UserReader;
-import io.demo.purchase.support.CustomException;
 import io.demo.purchase.support.RoleType;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,19 +30,19 @@ public class  AdminCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
         if (cookies == null)
-            throw new CustomException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다");
+            throw new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다");
         String accessToken = Arrays.stream(cookies)
                 .filter((c) -> "accessToken".equals(c.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
-                .orElseThrow(() -> new CustomException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다"));
+                .orElseThrow(() -> new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다"));
 
         // 쿠키 -> 유저 검색 -> User 반환 받기
         Long userId = jwtProvider.verifyToken(accessToken);
         User user = userReader.findById(userId);
 
         if (user.getRole() != RoleType.ADMIN)
-            throw new CustomException(CoreDomainErrorType.UNAUTHORIZED, "일반 사용자는 접근이 제한됩니다");
+            throw new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "일반 사용자는 접근이 제한됩니다");
 
         return true;
     }

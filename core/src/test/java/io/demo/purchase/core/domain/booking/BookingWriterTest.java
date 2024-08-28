@@ -1,7 +1,7 @@
 package io.demo.purchase.core.domain.booking;
 
 import io.demo.purchase.storage.*;
-import io.demo.purchase.support.CustomException;
+import io.demo.purchase.support.exception.CustomException;
 import io.demo.purchase.support.WorkoutType;
 
 import org.junit.jupiter.api.*;
@@ -167,7 +167,7 @@ class BookingWriterTest {
             try {
                 bookingWriter.append(this.user.getId(), slot.getId());
             } catch (Exception e) {
-                log.info("Exception in thread {} io.demo.purchase.support.CustomException: {}", Thread.currentThread().getName(), e.getMessage());
+                log.info("Exception in thread {} io.demo.purchase.support.error.CustomException: {}", Thread.currentThread().getName(), e.getMessage());
             }
             countDownLatch.countDown();
         }

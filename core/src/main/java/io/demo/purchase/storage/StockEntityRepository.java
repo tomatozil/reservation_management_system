@@ -1,10 +1,9 @@
 package io.demo.purchase.storage;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.core.domain.stock.Stock;
 import io.demo.purchase.core.domain.stock.StockRepository;
-import io.demo.purchase.support.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -45,7 +44,7 @@ class StockEntityRepository extends QuerydslRepositorySupport implements StockRe
     @Override
     public StockEntity findById(long stockId) {
         return stockJpaRepository.findById(stockId)
-                .orElseThrow(() -> new CustomException(CoreDomainErrorType.REQUEST_FAILED, "해당 재고를 찾을 수 없습니다"));
+                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "해당 재고를 찾을 수 없습니다"));
     }
 
     @Override
