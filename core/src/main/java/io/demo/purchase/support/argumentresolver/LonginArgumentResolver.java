@@ -1,10 +1,10 @@
 package io.demo.purchase.support.argumentresolver;
 
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
+import io.demo.purchase.core.PermissionIssueException;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.core.domain.user.JwtProvider;
 import io.demo.purchase.core.domain.user.User;
 import io.demo.purchase.core.domain.user.UserReader;
-import io.demo.purchase.support.CustomException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -47,12 +47,12 @@ public class LonginArgumentResolver implements HandlerMethodArgumentResolver {
         // cookie 확인하기
         Cookie[] cookies = request.getCookies();
         if (cookies == null)
-            throw new CustomException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다");
+            throw new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다");
         String accessToken = Arrays.stream(cookies)
                 .filter((c) -> "accessToken".equals(c.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
-                .orElseThrow(() -> new CustomException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다"));
+                .orElseThrow(() -> new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다"));
 
 
         // 쿠키 -> 유저 검색 -> User 반환 받기

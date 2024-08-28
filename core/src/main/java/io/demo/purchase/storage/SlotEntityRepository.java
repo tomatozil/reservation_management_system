@@ -1,11 +1,10 @@
 package io.demo.purchase.storage;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.core.domain.slot.SlotSimple;
 import io.demo.purchase.core.domain.slot.Slot;
 import io.demo.purchase.core.domain.slot.SlotRepository;
-import io.demo.purchase.support.CustomException;
 import io.demo.purchase.support.WorkoutType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -55,7 +54,7 @@ class SlotEntityRepository extends QuerydslRepositorySupport implements SlotRepo
     @Override
     public Slot find(Long slotId) {
         SlotEntity slot = slotJpaRepository.findById(slotId)
-                .orElseThrow(() -> new CustomException(CoreDomainErrorType.BAD_REQUEST_DATA, "요청 슬롯을 찾지 못했습니다"));
+                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 슬롯을 찾지 못했습니다"));
         return slot.toSlot();
     }
 }

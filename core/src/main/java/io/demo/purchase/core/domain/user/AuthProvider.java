@@ -1,7 +1,7 @@
 package io.demo.purchase.core.domain.user;
 
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
-import io.demo.purchase.support.CustomException;
+import io.demo.purchase.core.AlertUserRetryException;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +25,7 @@ public class AuthProvider {
 
         // 비밀번호 확인하기
         if (!bcryptEncoder.isMatch(inputPassword, user.getPassword()))
-            throw new CustomException(CoreDomainErrorType.BAD_REQUEST_DATA, "비밀번호가 일치하지 않습니다");
+            throw new AlertUserRetryException(CoreDomainErrorType.BAD_REQUEST_DATA, "비밀번호가 일치하지 않습니다");
 
         // access token 만들기
         return this.generateAccessToken(user.getId());

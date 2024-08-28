@@ -1,7 +1,8 @@
 package io.demo.purchase.core.domain.user;
 
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
-import io.demo.purchase.support.CustomException;
+import io.demo.purchase.core.AlertUserRetryException;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
+import io.demo.purchase.support.exception.CustomException;
 import io.demo.purchase.support.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class UserService {
             else
                 throw e;
         }
-        throw new CustomException(CoreDomainErrorType.REQUEST_FAILED, "회원가입을 이미 완료한 유저입니다");
+        throw new AlertUserRetryException(CoreDomainErrorType.REQUEST_FAILED, "회원가입을 이미 완료한 유저입니다");
     }
 
     public void updateUserRole(long userId, RoleType to) {

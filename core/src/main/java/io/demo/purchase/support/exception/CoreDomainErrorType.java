@@ -1,6 +1,5 @@
-package io.demo.purchase.core.domain.error;
+package io.demo.purchase.support.exception;
 
-import io.demo.purchase.support.ErrorType;
 import org.springframework.http.HttpStatus;
 
 public enum CoreDomainErrorType implements ErrorType {

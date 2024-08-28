@@ -1,10 +1,8 @@
 package io.demo.purchase.core.domain.user;
 
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
-import io.demo.purchase.support.CustomException;
+import io.demo.purchase.core.PermissionIssueException;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -54,7 +52,7 @@ public class JwtProvider {
             return Long.parseLong(subject);
 
         } catch (Exception e) {
-            throw new CustomException(CoreDomainErrorType.UNAUTHORIZED, "token 검증에 실패했습니다");
+            throw new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "token 검증에 실패했습니다");
         }
     }
 

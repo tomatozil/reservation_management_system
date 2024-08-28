@@ -1,7 +1,7 @@
 package io.demo.purchase.core.domain.user;
 
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
-import io.demo.purchase.support.CustomException;
+import io.demo.purchase.storage.AlertAdminCheckException;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.support.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ public class UserWriter {
         User user = userRepository.find(userId);
 
         if (user.role == to)
-            throw new CustomException(CoreDomainErrorType.REQUEST_FAILED, "역할 변경 요청이 실패했습니다");
+            throw new AlertAdminCheckException(CoreDomainErrorType.REQUEST_FAILED, "역할 변경 요청이 실패했습니다");
 
         userRepository.updateRole(userId, to);
     }
