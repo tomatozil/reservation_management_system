@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Slf4j
 @Repository
 class UserEntityRepository extends QuerydslRepositorySupport implements UserRepository {
@@ -37,11 +39,11 @@ class UserEntityRepository extends QuerydslRepositorySupport implements UserRepo
 
     @Override
     public User find(String email) {
-        UserEntity user = jpaQueryFactory.selectFrom(userEntity)
+        UserEntity user = Optional.ofNullable(jpaQueryFactory.selectFrom(userEntity)
                 .where(userEntity.email.eq(email))
-                .fetchFirst();
-        if (user == null)
-            throw new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 유저를 찾지 못했습니다");
+                .fetchFirst())
+                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 유저를 찾지 못했습니다"));
+
         return user.toUser();
     }
 
@@ -49,18 +51,17 @@ class UserEntityRepository extends QuerydslRepositorySupport implements UserRepo
     public User find(long userId) {
         UserEntity user = userJpaRepository.findById(userId).orElseThrow(() ->
                         new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 유저를 찾지 못했습니다"));
+
         return user.toUser();
     }
 
     @Override
     public User find(String name, String email) {
-        UserEntity user = jpaQueryFactory.selectFrom(userEntity)
+        UserEntity user = Optional.ofNullable(jpaQueryFactory.selectFrom(userEntity)
                 .where(userEntity.name.eq(name)
                         .and(userEntity.email.eq(email)))
-                .fetchFirst();
-
-        if (user == null)
-            throw new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 유저를 찾지 못했습니다");
+                .fetchFirst())
+                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 유저를 찾지 못했습니다"));
 
         return user.toUser();
     }

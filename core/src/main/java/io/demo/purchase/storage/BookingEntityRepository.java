@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 class BookingEntityRepository extends QuerydslRepositorySupport implements BookingRepository {
 
@@ -31,27 +33,23 @@ class BookingEntityRepository extends QuerydslRepositorySupport implements Booki
 
     @Override
     public Booking find(long userId, long slotId) {
-        BookingEntity booking = jpaQueryFactory.selectFrom(bookingEntity)
+        BookingEntity booking = Optional.ofNullable(jpaQueryFactory.selectFrom(bookingEntity)
                 .where(bookingEntity.userId.eq(userId).and(bookingEntity.slotId.eq(slotId))
                         .and(bookingEntity.deletedAt.isNull()))
-                .fetchFirst();
-
-        if (booking == null) {
-            throw new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 예약 내역을 찾지 못했습니다");
-        }
+                .fetchFirst())
+                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 예약 내역을 찾지 못했습니다"));
 
         return booking.toBooking();
     }
 
     @Override
     public long count(long slotId) {
-        Long total = jpaQueryFactory.select(Expressions.ONE.count())
+        Long total = Optional.ofNullable(jpaQueryFactory.select(Expressions.ONE.count())
                 .from(bookingEntity)
                 .where(bookingEntity.slotId.eq(slotId))
-                .fetchOne();
-        if (total == null) {
-            total = 0L;
-        }
+                .fetchOne())
+                .orElse(0L);
+
         return total;
     }
 }

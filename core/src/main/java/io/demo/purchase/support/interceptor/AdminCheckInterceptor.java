@@ -29,8 +29,6 @@ public class  AdminCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
-        if (cookies == null)
-            throw new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다");
         String accessToken = Arrays.stream(cookies)
                 .filter((c) -> "accessToken".equals(c.getName()))
                 .findFirst()

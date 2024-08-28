@@ -46,8 +46,6 @@ public class LonginArgumentResolver implements HandlerMethodArgumentResolver {
 
         // cookie 확인하기
         Cookie[] cookies = request.getCookies();
-        if (cookies == null)
-            throw new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다");
         String accessToken = Arrays.stream(cookies)
                 .filter((c) -> "accessToken".equals(c.getName()))
                 .findFirst()
