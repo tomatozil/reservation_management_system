@@ -17,6 +17,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -40,15 +41,11 @@ public class LonginArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        log.info("argument resolver 들어왔어요");
-
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-        // cookie 확인하기
-        Cookie[] cookies = request.getCookies();
-        String accessToken = Arrays.stream(cookies)
-                .filter((c) -> "accessToken".equals(c.getName()))
-                .findFirst()
+        String accessToken = Optional.ofNullable(request.getCookies())
+                .flatMap(cookies ->
+                    Arrays.stream(cookies).filter((c) -> "accessToken".equals(c.getName())).findFirst())
                 .map(Cookie::getValue)
                 .orElseThrow(() -> new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다"));
 

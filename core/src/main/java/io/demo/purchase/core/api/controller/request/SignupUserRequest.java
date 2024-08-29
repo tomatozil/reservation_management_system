@@ -22,7 +22,7 @@ public class SignupUserRequest {
 
     public UserSignupInfo toUserSignupInfo() {
         // name, password, email 검증
-        if (name.length() > 20)
+        if (name.length() > 10)
             throw new AlertUserRetryException(CoreDomainErrorType.BAD_REQUEST_DATA, "이름은 20자 이하로 작성해주세요");
         if (!Regex.PASSWORD_REGEX.isMatched(password))
             throw new AlertUserRetryException(CoreDomainErrorType.BAD_REQUEST_DATA, "비밀번호는 6자 이상 작성해주세요");

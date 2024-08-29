@@ -32,14 +32,13 @@ class BookingEntityRepository extends QuerydslRepositorySupport implements Booki
     }
 
     @Override
-    public Booking find(long userId, long slotId) {
-        BookingEntity booking = Optional.ofNullable(jpaQueryFactory.selectFrom(bookingEntity)
+    public Optional<Booking> find(long userId, long slotId) {
+        Optional<BookingEntity> optBookingEntity = Optional.ofNullable(jpaQueryFactory.selectFrom(bookingEntity)
                 .where(bookingEntity.userId.eq(userId).and(bookingEntity.slotId.eq(slotId))
                         .and(bookingEntity.deletedAt.isNull()))
-                .fetchFirst())
-                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 예약 내역을 찾지 못했습니다"));
+                .fetchOne());
 
-        return booking.toBooking();
+        return optBookingEntity.map(BookingEntity::toBooking);
     }
 
     @Override

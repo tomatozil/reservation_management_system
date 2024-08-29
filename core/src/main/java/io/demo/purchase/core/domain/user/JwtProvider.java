@@ -38,10 +38,8 @@ public class JwtProvider {
     }
 
     public Long verifyToken(String accessToken) {
-        log.debug("---- accessToken: {} ----", accessToken);
 
         try {
-            log.info("--- key: {} ---", key);
             String subject = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()

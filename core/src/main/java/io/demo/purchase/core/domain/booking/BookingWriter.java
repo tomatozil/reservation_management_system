@@ -5,11 +5,11 @@ import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.core.domain.stock.Stock;
 import io.demo.purchase.core.domain.stock.StockReader;
 import io.demo.purchase.core.domain.stock.StockWriter;
-import io.demo.purchase.support.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -35,13 +35,9 @@ public class BookingWriter {
 
     public long append(long userId, long slotId) {
         // check rebook (already in or not)
-        try {
-            Booking booking = bookingReader.find(userId, slotId);
-        } catch (CustomException e) {
-            if (e.getStatusCode() != HttpStatus.BAD_REQUEST.value()) {
-                throw e;
-            }
-        }
+        Optional<Booking> optBooking = bookingReader.find(userId, slotId);
+        if (optBooking.isPresent())
+            throw new AlertUserRetryException(CoreDomainErrorType.REQUEST_FAILED, "예약 내역이 존재합니다");
 
         long bookingId;
         synchronized (this) {

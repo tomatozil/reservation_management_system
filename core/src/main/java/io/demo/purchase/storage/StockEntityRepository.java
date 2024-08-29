@@ -35,7 +35,7 @@ class StockEntityRepository extends QuerydslRepositorySupport implements StockRe
         Optional<StockEntity> optStockEntity = Optional.ofNullable(jpaQueryFactory.selectFrom(stock)
                 .where(stock.slotId.eq(slotId)
                         .and(stock.deletedAt.isNull()))
-                .fetchFirst());
+                .fetchOne());
 //        Optional<StockEntity> optStockEntity = stockJpaRepository.findBySlotId(slotId);
 
         return optStockEntity.map(StockEntity::toStock);

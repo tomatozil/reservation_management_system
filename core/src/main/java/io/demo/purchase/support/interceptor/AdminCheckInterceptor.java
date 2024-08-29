@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @Component
 public class  AdminCheckInterceptor implements HandlerInterceptor {
@@ -28,10 +29,10 @@ public class  AdminCheckInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Cookie[] cookies = request.getCookies();
-        String accessToken = Arrays.stream(cookies)
-                .filter((c) -> "accessToken".equals(c.getName()))
-                .findFirst()
+
+        String accessToken = Optional.ofNullable(request.getCookies())
+                .flatMap(cookies ->
+                        Arrays.stream(cookies).filter((c) -> "accessToken".equals(c.getName())).findFirst())
                 .map(Cookie::getValue)
                 .orElseThrow(() -> new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다"));
 

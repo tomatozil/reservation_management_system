@@ -1,6 +1,7 @@
 package io.demo.purchase.core.domain.user;
 
 import io.demo.purchase.core.AlertUserRetryException;
+import io.demo.purchase.storage.NoDataException;
 import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.support.exception.CustomException;
 import io.demo.purchase.support.RoleType;
@@ -23,9 +24,8 @@ public class UserService {
     public long add(UserSignupInfo userSignUpInfo) {
         try {
             User user = userReader.findExist(userSignUpInfo.name, userSignUpInfo.email);
-
         } catch (CustomException e) {
-            if (e.getStatusCode() == HttpStatus.BAD_REQUEST.value())
+            if (e instanceof NoDataException)
                 return userWriter.append(userSignUpInfo.name, userSignUpInfo.email, userSignUpInfo.password);
             else
                 throw e;

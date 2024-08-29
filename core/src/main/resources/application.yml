@@ -18,5 +18,5 @@ spring:
 
 logging:
   level:
-    io.demo.purchase: debug
+    io.demo.purchase: trace
 ---
