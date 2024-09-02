@@ -15,8 +15,20 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
 
 logging:
   level:
-    io.demo.purchase: trace
+    org:
+#      springframework:
+#        transaction:
+#          interceptor: trace
+#        orm:
+#          jpa: trace
+      hibernate:
+        sql: debug
+        transaction: trace
+        jdbc: trace
 ---
