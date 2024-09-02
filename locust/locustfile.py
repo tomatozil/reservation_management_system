@@ -12,13 +12,14 @@ class MyUser(HttpUser):
         self.stop()
 
     def on_start(self):
-        print("Start locust test")
 
         # 고유한 이메일 생성
         unique_id = uuid.uuid4().hex[:6] # 6자리의 고유한 ID 생성
         name = f"u_{unique_id}"
         email = f"u_{unique_id}@example.com"
         password = f"{unique_id}ab1!"
+
+        print(f"Starting test with user {name}")
 
         self.client.post('/user/signup', json={"name": name,
                                                "email": email,

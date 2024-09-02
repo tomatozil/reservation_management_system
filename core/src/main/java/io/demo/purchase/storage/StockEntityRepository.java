@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.core.domain.stock.Stock;
 import io.demo.purchase.core.domain.stock.StockRepository;
+import jakarta.persistence.LockModeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -35,7 +36,9 @@ class StockEntityRepository extends QuerydslRepositorySupport implements StockRe
         Optional<StockEntity> optStockEntity = Optional.ofNullable(jpaQueryFactory.selectFrom(stock)
                 .where(stock.slotId.eq(slotId)
                         .and(stock.deletedAt.isNull()))
+                        .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .fetchOne());
+
 //        Optional<StockEntity> optStockEntity = stockJpaRepository.findBySlotId(slotId);
 
         return optStockEntity.map(StockEntity::toStock);
