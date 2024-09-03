@@ -41,8 +41,8 @@ public class BookingWriter {
 
     public long append(long userId, long slotId) {
         // check rebook (already in or not)
-        Optional<Booking> optBooking = bookingReader.find(userId, slotId);
-        if (optBooking.isPresent())
+        Optional<Long> optBookingId = bookingReader.find(userId, slotId);
+        if (optBookingId.isPresent())
             throw new AlertUserRetryException(CoreDomainErrorType.REQUEST_FAILED, "예약 내역이 존재합니다");
 
 //        synchronized (this) {
