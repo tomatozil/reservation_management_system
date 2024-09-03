@@ -3,6 +3,8 @@ package io.demo.purchase.core.domain.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class UserReader {
     private final UserRepository userRepository;
@@ -16,7 +18,7 @@ public class UserReader {
         return userRepository.find(userId);
     }
 
-    public User findExist(String name, String email) {
+    public Optional<Long> findExist(String name, String email) {
         return userRepository.find(name, email);
     }
 

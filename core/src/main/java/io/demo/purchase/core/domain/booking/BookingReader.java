@@ -15,7 +15,7 @@ public class BookingReader {
         this.bookingRepository = bookingRepository;
     }
 
-    public Optional<Booking> find(long userId, long slotId) {
+    public Optional<Long> find(long userId, long slotId) {
         return bookingRepository.find(userId, slotId);
     }
 

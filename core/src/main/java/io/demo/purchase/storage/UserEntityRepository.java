@@ -56,14 +56,12 @@ class UserEntityRepository extends QuerydslRepositorySupport implements UserRepo
     }
 
     @Override
-    public User find(String name, String email) {
-        UserEntity user = Optional.ofNullable(jpaQueryFactory.selectFrom(userEntity)
-                .where(userEntity.name.eq(name)
-                        .and(userEntity.email.eq(email)))
-                .fetchOne())
-                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 유저를 찾지 못했습니다"));
-
-        return user.toUser();
+    public Optional<Long> find(String name, String email) {
+        return Optional.ofNullable(jpaQueryFactory.select(userEntity.id)
+                .from(userEntity)
+                .where(userEntity.email.eq(email) // idx_email_name 순서로 인덱싱 있음
+                        .and(userEntity.name.eq(name)))
+                .fetchOne());
     }
 
     @Override
