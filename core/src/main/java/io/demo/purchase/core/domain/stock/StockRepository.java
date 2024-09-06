@@ -16,6 +16,6 @@ public interface StockRepository {
     StockEntity findById(long stockId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    void update(Stock newStock);
+    void updateStock(Stock newStock);
 }
 

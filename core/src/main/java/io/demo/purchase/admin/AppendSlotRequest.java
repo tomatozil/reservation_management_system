@@ -23,7 +23,7 @@ public class AppendSlotRequest {
     long quantity;
 
     public AddSlot toAddSlot() {
-        LocalDateTime eventDatetime = LocalDateTime.of(this.eventDate, this.eventTime).withSecond(0).withNano(0);;
+        LocalDateTime eventDatetime = LocalDateTime.of(this.eventDate, this.eventTime).withNano(0);
         return new AddSlot(coachId, workoutType, eventDatetime, price, quantity);
     }
 }

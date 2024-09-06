@@ -47,11 +47,11 @@ class StockEntityRepository extends QuerydslRepositorySupport implements StockRe
     @Override
     public StockEntity findById(long stockId) {
         return stockJpaRepository.findById(stockId)
-                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "해당 재고를 찾을 수 없습니다"));
+                .orElseThrow(() -> new NoDataException("해당 재고를 찾을 수 없습니다"));
     }
 
     @Override
-    public void update(Stock newStock) {
+    public void updateStock(Stock newStock) {
         StockEntity stockEntity = this.findById(newStock.getId());
 
         stockEntity.updateStock(newStock.getStock());

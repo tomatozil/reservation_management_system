@@ -7,6 +7,7 @@ import io.demo.purchase.support.argumentresolver.AuthorizedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,5 +24,10 @@ public class BookingController {
     public AppendBookingResponse bookSlot(@AuthorizedUser User user, @PathVariable("slotId") Long slotId) {
         long bookingId = bookingService.add(user.getId(), slotId);
         return new AppendBookingResponse(bookingId);
+    }
+
+    @PutMapping("/booking/{slotId}")
+    public void cancelSlot(@AuthorizedUser User user, @PathVariable("slotId") Long slotId) {
+        bookingService.cancel(user.getId(), slotId);
     }
 }

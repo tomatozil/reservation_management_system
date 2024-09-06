@@ -1,12 +1,9 @@
 package io.demo.purchase.core.domain.user;
 
 import io.demo.purchase.core.AlertUserRetryException;
-import io.demo.purchase.storage.NoDataException;
 import io.demo.purchase.support.exception.CoreDomainErrorType;
-import io.demo.purchase.support.exception.CustomException;
 import io.demo.purchase.support.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
