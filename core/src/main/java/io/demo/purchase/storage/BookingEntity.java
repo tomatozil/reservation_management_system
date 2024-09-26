@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.Lock;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookingEntity extends BaseEntity {
+class BookingEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

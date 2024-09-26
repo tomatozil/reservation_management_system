@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface BookingJpaRepository extends JpaRepository<BookingEntity, Long> {
+interface BookingJpaRepository extends JpaRepository<BookingEntity, Long> {
 
     // test
     @Modifying
