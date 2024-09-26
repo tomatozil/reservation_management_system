@@ -1,14 +1,17 @@
 package io.demo.purchase.storage;
 
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.support.exception.CustomException;
 import io.demo.purchase.support.exception.ErrorType;
 
 public class NoDataException extends CustomException {
-    public NoDataException(ErrorType errorType) {
-        super(errorType);
+    private static final CoreDomainErrorType ERROR_TYPE = CoreDomainErrorType.NOT_FOUND;
+
+    public NoDataException() {
+        super(ERROR_TYPE);
     }
 
-    public NoDataException(ErrorType errorType, String message) {
-        super(errorType, message);
+    public NoDataException(String message) {
+        super(ERROR_TYPE, message);
     }
 }

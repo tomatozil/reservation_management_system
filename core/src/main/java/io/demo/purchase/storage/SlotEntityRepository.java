@@ -54,7 +54,7 @@ class SlotEntityRepository extends QuerydslRepositorySupport implements SlotRepo
     @Override
     public Slot find(Long slotId) {
         SlotEntity slot = slotJpaRepository.findById(slotId)
-                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 슬롯을 찾지 못했습니다"));
+                .orElseThrow(() -> new NoDataException("요청 슬롯을 찾지 못했습니다"));
         return slot.toSlot();
     }
 }

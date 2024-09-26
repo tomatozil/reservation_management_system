@@ -14,13 +14,15 @@ public class Slot {
     WorkoutType workoutType;
     LocalDateTime eventTime;
     long price;
+    long total;
 
-    public Slot(Long id, Long coachId, WorkoutType workoutType, LocalDateTime eventTime, Long price) {
+    public Slot(Long id, Long coachId, WorkoutType workoutType, LocalDateTime eventTime, Long price, Long total) {
         this.id = id;
         this.coachId = coachId;
         this.workoutType = workoutType;
         this.eventTime = eventTime;
         this.price = price;
+        this.total = total;
     }
 
     public FindSlotResponse toResponse() {

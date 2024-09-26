@@ -42,7 +42,7 @@ class UserEntityRepository extends QuerydslRepositorySupport implements UserRepo
         UserEntity user = Optional.ofNullable(jpaQueryFactory.selectFrom(userEntity)
                 .where(userEntity.email.eq(email))
                 .fetchOne())
-                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 유저를 찾지 못했습니다"));
+                .orElseThrow(() -> new NoDataException("요청 유저를 찾지 못했습니다"));
 
         return user.toUser();
     }
@@ -50,7 +50,7 @@ class UserEntityRepository extends QuerydslRepositorySupport implements UserRepo
     @Override
     public User find(long userId) {
         UserEntity user = userJpaRepository.findById(userId).orElseThrow(() ->
-                        new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 유저를 찾지 못했습니다"));
+                        new NoDataException("요청 유저를 찾지 못했습니다"));
 
         return user.toUser();
     }
@@ -67,7 +67,7 @@ class UserEntityRepository extends QuerydslRepositorySupport implements UserRepo
     @Override
     public void updateRole(long userId, RoleType to) {
         UserEntity userEntity = userJpaRepository.findById(userId)
-                .orElseThrow(() -> new NoDataException(CoreDomainErrorType.NOT_FOUND, "요청 유저를 찾지 못했습니다"));
+                .orElseThrow(() -> new NoDataException("요청 유저를 찾지 못했습니다"));
 
         userEntity.updateRole(to);
         userJpaRepository.save(userEntity);

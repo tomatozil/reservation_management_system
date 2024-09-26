@@ -17,6 +17,6 @@ public class StockWriter {
         stockRepository.add(slotId, quantity);
     }
     public void updateStock(Stock newStock) {
-        stockRepository.update(newStock);
+        stockRepository.updateStock(newStock);
     }
 }

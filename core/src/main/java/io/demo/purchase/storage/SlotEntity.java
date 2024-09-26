@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SlotEntity extends BaseEntity {
+class SlotEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,6 +32,10 @@ public class SlotEntity extends BaseEntity {
 
     @Column(nullable = false)
     private Long price;
+
+    // LocalCache를 위한 비정규화
+    @Builder.Default
+    private Long total = 3L;
 
     public SlotEntity(long coachId, WorkoutType workoutType, LocalDateTime eventDatetime, long price) {
         this.coachId = coachId;
@@ -50,7 +54,7 @@ public class SlotEntity extends BaseEntity {
     }
 
     public Slot toSlot() {
-        return new Slot(id, coachId, workoutType, eventDatetime, price);
+        return new Slot(id, coachId, workoutType, eventDatetime, price, total);
     }
 
     public static SlotEntity of(long coachId, WorkoutType workoutType, LocalDateTime eventDatetime, long price) {
