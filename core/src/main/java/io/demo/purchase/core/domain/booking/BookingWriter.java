@@ -13,10 +13,10 @@ import io.demo.purchase.core.domain.stock.StockWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -26,7 +26,6 @@ public class BookingWriter {
     private final BookingReader bookingReader;
     private final BookingRepository bookingRepository; // writer ?
 
-    private final TransactionTemplate transactionTemplate;
     private final SlotReader slotReader;
 
     volatile ConcurrentHashMap<Long, Long> stockTable;
@@ -37,13 +36,11 @@ public class BookingWriter {
             StockWriter stockWriter,
             BookingReader bookingReader,
             BookingRepository bookingRepository,
-            TransactionTemplate transactionTemplate,
             SlotReader slotReader) {
         this.stockReader = stockReader;
         this.stockWriter = stockWriter;
         this.bookingReader = bookingReader;
         this.bookingRepository = bookingRepository;
-        this.transactionTemplate = transactionTemplate;
         this.slotReader = slotReader;
         this.stockTable = new ConcurrentHashMap<>();
     }
@@ -77,28 +74,23 @@ public class BookingWriter {
         bookingRepository.updateStatus(bookingId, BookingStatus.CANCELED);
     }
 
+    @Transactional
     public long append(long userId, long slotId) {
-        // check rebook (already in or not)
+        // 예약 내역 확인
         Optional<Long> optBookingId = bookingReader.find(userId, slotId);
-        if (optBookingId.isPresent())
+        if (optBookingId.isPresent()) {
             throw new AlertUserRetryException(CoreDomainErrorType.REQUEST_FAILED, "예약 내역이 존재합니다");
+        }
 
-        // Use transaction template for stock update and booking creation
-        Long bookingId = Optional.ofNullable(transactionTemplate.execute(status -> {
+        // 재고 확인
+        Stock stock = stockReader.findStock(slotId)
+                .filter(s -> s.getStock() < s.getTotal())
+                .orElseThrow(() -> new AlertUserRetryException(CoreDomainErrorType.REQUEST_FAILED, "인원 초과로 예약이 불가능합니다"));
 
-            Stock stock = stockReader.findStock(slotId)
-                    .filter(s -> s.getStock() < s.getTotal())
-                    .orElseThrow(() -> new AlertUserRetryException(CoreDomainErrorType.REQUEST_FAILED, "인원 초과로 예약이 불가능합니다"));
+        // 재고 업데이트
+        stock.setStock(stock.getStock() + 1);
+        stockWriter.updateStock(stock);
 
-            // update stock entity
-            stock.setStock(stock.getStock() + 1);
-            stockWriter.updateStock(stock);
-
-            // user id, slot id write
-            long result = bookingRepository.add(userId, slotId);
-            return result;
-        })).orElseThrow(() -> new RollbackOccuredException(CoreDomainErrorType.NOT_ACCEPTABLE, "예약 처리 도중 문제가 발생했습니다"));
-
-        return bookingId;
+        return bookingRepository.add(userId, slotId);
     }
 }

@@ -16,6 +16,7 @@ public class StockWriter {
     public void add(long slotId, long quantity) {
         stockRepository.add(slotId, quantity);
     }
+
     public void updateStock(Stock newStock) {
         stockRepository.updateStock(newStock);
     }

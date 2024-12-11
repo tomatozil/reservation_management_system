@@ -16,8 +16,8 @@ public class BookingService {
 
     public long add(long userId, long slotId) {
         // userid, slotid append
-//        return bookingWriter.append(userId, slotId);
-        return bookingWriter.appendWithLocalCache(userId, slotId);
+        return bookingWriter.append(userId, slotId);
+//        return bookingWriter.appendWithLocalCache(userId, slotId);
     }
 
     public void cancel(long userId, long slotId) {

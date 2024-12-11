@@ -10,9 +10,10 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository {
     long add(long userId, long slotId);
+    @Lock(LockModeType.PESSIMISTIC_READ)
     Optional<Long> find(long userId, long slotId);
 
-//    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     void updateStatus(long bookingId, BookingStatus to);
     long count(long slotId);
 }
