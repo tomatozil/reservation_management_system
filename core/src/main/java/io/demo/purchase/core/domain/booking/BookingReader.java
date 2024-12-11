@@ -3,6 +3,8 @@ package io.demo.purchase.core.domain.booking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class BookingReader {
 
@@ -13,7 +15,7 @@ public class BookingReader {
         this.bookingRepository = bookingRepository;
     }
 
-    public Booking find(long userId, long slotId) {
+    public Optional<Long> find(long userId, long slotId) {
         return bookingRepository.find(userId, slotId);
     }
 

@@ -1,6 +1,7 @@
 package io.demo.purchase.core.domain.slot;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ public class SlotReader {
         return slotRepository.findList(date);
     }
 
+    @Cacheable(value = "slotCache", key = "#slotId")
     public Slot find(Long slotId) {
         return slotRepository.find(slotId);
     }

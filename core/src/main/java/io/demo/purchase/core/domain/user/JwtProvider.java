@@ -1,23 +1,31 @@
 package io.demo.purchase.core.domain.user;
 
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
-import io.demo.purchase.support.CustomException;
+import io.demo.purchase.core.PermissionIssueException;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Optional;
 
+@Slf4j
 @Component
 public class JwtProvider {
     private final SecretKey key;
 
-    protected JwtProvider() {
-        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    protected JwtProvider(@Value("${JWT_SECRET_KEY}") String secretKey) {
+        log.info("---- secret key: {} ----", secretKey);
+
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+
+        SignatureAlgorithm alg = SignatureAlgorithm.HS256;
+        this.key = new SecretKeySpec(keyBytes, alg.getJcaName());
     }
 
     public String generate(Long userId) {
@@ -30,6 +38,7 @@ public class JwtProvider {
     }
 
     public Long verifyToken(String accessToken) {
+
         try {
             String subject = Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -37,10 +46,11 @@ public class JwtProvider {
                     .parseClaimsJws(accessToken)
                     .getBody()
                     .getSubject();
+
             return Long.parseLong(subject);
 
         } catch (Exception e) {
-            throw new CustomException(CoreDomainErrorType.UNAUTHORIZED, "token 검증에 실패했습니다");
+            throw new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "token 검증에 실패했습니다");
         }
     }
 

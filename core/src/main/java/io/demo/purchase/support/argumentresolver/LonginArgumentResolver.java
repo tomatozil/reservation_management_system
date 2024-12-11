@@ -1,14 +1,13 @@
 package io.demo.purchase.support.argumentresolver;
 
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
+import io.demo.purchase.core.PermissionIssueException;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.core.domain.user.JwtProvider;
 import io.demo.purchase.core.domain.user.User;
 import io.demo.purchase.core.domain.user.UserReader;
-import io.demo.purchase.support.CustomException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -18,11 +17,11 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Arrays;
+import java.util.Optional;
 
+@Slf4j
 @Component
 public class LonginArgumentResolver implements HandlerMethodArgumentResolver {
-
-    private static final Logger log = LoggerFactory.getLogger(LonginArgumentResolver.class);
 
     private final JwtProvider jwtProvider;
     private final UserReader userReader;
@@ -42,25 +41,19 @@ public class LonginArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        log.info("argument resolver 들어왔어요");
-
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-        // cookie 확인하기
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null)
-            throw new CustomException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다");
-        String accessToken = Arrays.stream(cookies)
-                .filter((c) -> "accessToken".equals(c.getName()))
-                .findFirst()
+        String accessToken = Optional.ofNullable(request.getCookies())
+                .flatMap(cookies ->
+                    Arrays.stream(cookies).filter((c) -> "accessToken".equals(c.getName())).findFirst())
                 .map(Cookie::getValue)
-                .orElseThrow(() -> new CustomException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다"));
+                .orElseThrow(() -> new PermissionIssueException(CoreDomainErrorType.UNAUTHORIZED, "쿠키를 찾지 못했습니다"));
 
 
         // 쿠키 -> 유저 검색 -> User 반환 받기
         Long userId = jwtProvider.verifyToken(accessToken);
-//        User user = userReader.findById(userId);
+        User user = userReader.findById(userId);
 
-        return userId;
+        return user;
     }
 }

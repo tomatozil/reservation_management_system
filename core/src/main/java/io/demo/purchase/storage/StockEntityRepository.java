@@ -1,10 +1,10 @@
 package io.demo.purchase.storage;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import io.demo.purchase.core.domain.stock.Stock;
 import io.demo.purchase.core.domain.stock.StockRepository;
-import io.demo.purchase.support.CustomException;
+import jakarta.persistence.LockModeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -25,27 +25,29 @@ class StockEntityRepository extends QuerydslRepositorySupport implements StockRe
     }
 
     @Override
+    public void add(long slotId, long quantity) {
+        stockJpaRepository.save(StockEntity.of(slotId, quantity));
+    }
+
+    @Override
     public Optional<Stock> findBySlotId(long slotId) {
                 QStockEntity stock = QStockEntity.stockEntity;
 
         Optional<StockEntity> optStockEntity = Optional.ofNullable(jpaQueryFactory.selectFrom(stock)
                 .where(stock.slotId.eq(slotId)
                         .and(stock.deletedAt.isNull()))
-                .fetchFirst());
+//                        .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                .fetchOne());
+
 //        Optional<StockEntity> optStockEntity = stockJpaRepository.findBySlotId(slotId);
 
         return optStockEntity.map(StockEntity::toStock);
     }
 
     @Override
-    public StockEntity findById(long stockId) {
-        return stockJpaRepository.findById(stockId)
-                .orElseThrow(() -> new CustomException(CoreDomainErrorType.REQUEST_FAILED, "해당 재고를 찾을 수 없습니다"));
-    }
-
-    @Override
-    public void update(Stock newStock) {
-        StockEntity stockEntity = this.findById(newStock.getId());
+    public void updateStock(Stock newStock) {
+        StockEntity stockEntity = stockJpaRepository.findById(newStock.getId())
+                .orElseThrow(() -> new NoDataException("해당 재고를 찾을 수 없습니다"));
 
         stockEntity.updateStock(newStock.getStock());
         stockJpaRepository.save(stockEntity);

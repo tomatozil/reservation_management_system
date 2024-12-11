@@ -4,11 +4,13 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.demo.purchase.core.domain.booking.Booking;
 import io.demo.purchase.core.domain.booking.BookingRepository;
-import io.demo.purchase.core.domain.error.CoreDomainErrorType;
-import io.demo.purchase.support.CustomException;
+import io.demo.purchase.support.BookingStatus;
+import io.demo.purchase.support.exception.CoreDomainErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 class BookingEntityRepository extends QuerydslRepositorySupport implements BookingRepository {
@@ -31,28 +33,33 @@ class BookingEntityRepository extends QuerydslRepositorySupport implements Booki
     }
 
     @Override
-    public Booking find(long userId, long slotId) {
-        BookingEntity booking = jpaQueryFactory.selectFrom(bookingEntity)
-                .where(bookingEntity.userId.eq(userId).and(bookingEntity.slotId.eq(slotId))
-                        .and(bookingEntity.deletedAt.isNull()))
-                .fetchFirst();
-
-        if (booking == null) {
-            throw new CustomException(CoreDomainErrorType.BAD_REQUEST_DATA, "요청 예약 내역을 찾지 못했습니다");
-        }
-
-        return booking.toBooking();
+    public Optional<Long> find(long userId, long slotId) {
+        return Optional.ofNullable(jpaQueryFactory.select(bookingEntity.id)
+                .from(bookingEntity)
+                .where(bookingEntity.userId.eq(userId)
+                        .and(bookingEntity.slotId.eq(slotId))
+                        .and(bookingEntity.status.eq(BookingStatus.CONFIRMED)))
+                .fetchOne());
     }
 
     @Override
+    public void updateStatus(long bookingId, BookingStatus to) {
+        BookingEntity bookingEntity = bookingJpaRepository.findById(bookingId)
+                .orElseThrow(() -> new NoDataException("요청 예약 내역을 찾지 못했습니다"));
+
+        bookingEntity.updateStatus(to);
+        bookingJpaRepository.save(bookingEntity);
+    }
+
+
+    @Override
     public long count(long slotId) {
-        Long total = jpaQueryFactory.select(Expressions.ONE.count())
+        Long total = Optional.ofNullable(jpaQueryFactory.select(Expressions.ONE.count())
                 .from(bookingEntity)
                 .where(bookingEntity.slotId.eq(slotId))
-                .fetchOne();
-        if (total == null) {
-            total = 0L;
-        }
+                .fetchOne())
+                .orElse(0L);
+
         return total;
     }
 }

@@ -2,19 +2,33 @@ spring.application.name: purchase
 spring.profiles.active: local
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/mydatabase
+    url: jdbc:mysql://localhost:3309/mydatabase
     username: jiyun
     password: pwpwpw
 
   jpa:
     show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
 
+logging:
+  level:
+    org:
+#      springframework:
+#        transaction:
+#          interceptor: trace
+#        orm:
+#          jpa: trace
+      hibernate:
+        sql: debug
+        transaction: trace
+        jdbc: trace
 ---
