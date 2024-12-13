@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class BookingReader {
@@ -15,6 +16,7 @@ public class BookingReader {
         this.bookingRepository = bookingRepository;
     }
 
+    @Transactional
     public Optional<Long> find(long userId, long slotId) {
         return bookingRepository.find(userId, slotId);
     }

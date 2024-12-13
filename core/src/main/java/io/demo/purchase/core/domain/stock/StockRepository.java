@@ -10,9 +10,11 @@ import java.util.Optional;
 public interface StockRepository {
     void add(long slotId, long quantity);
 
-    Optional<Stock> findBySlotId(long slotId);
+    Stock findBySlotId(long slotId);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    void updateStock(Stock newStock);
+    void increaseStock(long stockId);
+
+    void acquireNamedLock();
+    void releaseNamedLock();
 }
 

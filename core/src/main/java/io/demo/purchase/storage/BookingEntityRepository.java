@@ -6,6 +6,7 @@ import io.demo.purchase.core.domain.booking.Booking;
 import io.demo.purchase.core.domain.booking.BookingRepository;
 import io.demo.purchase.support.BookingStatus;
 import io.demo.purchase.support.exception.CoreDomainErrorType;
+import jakarta.persistence.LockModeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -39,6 +40,7 @@ class BookingEntityRepository extends QuerydslRepositorySupport implements Booki
                 .where(bookingEntity.userId.eq(userId)
                         .and(bookingEntity.slotId.eq(slotId))
                         .and(bookingEntity.status.eq(BookingStatus.CONFIRMED)))
+//                        .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .fetchOne());
     }
 

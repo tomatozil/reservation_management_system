@@ -1,11 +1,8 @@
 package io.demo.purchase.core.domain.stock;
 
-import io.demo.purchase.core.domain.slot.Slot;
 import io.demo.purchase.core.domain.slot.SlotReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class StockReader {
@@ -19,10 +16,15 @@ public class StockReader {
         this.stockRepository = stockRepository;
     }
 
-    public Optional<Stock> findStock(long slotId) {
-        // 유효한 slot인지 확인
-        Slot slot = slotReader.find(slotId);
+    public Stock find(long slotId) {
+        return stockRepository.findBySlotId(slotId);
+    }
 
-        return stockRepository.findBySlotId(slot.getId());
+    public void getNamedLock() {
+        stockRepository.acquireNamedLock();
+    }
+
+    public void releaseNamedLock() {
+        stockRepository.releaseNamedLock();
     }
 }
