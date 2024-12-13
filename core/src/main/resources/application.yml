@@ -23,12 +23,8 @@ logging:
   level:
     org:
 #      springframework:
-#        transaction:
-#          interceptor: trace
-#        orm:
-#          jpa: trace
+#        transaction: debug
+#        transaction.interceptor: trace
       hibernate:
         sql: debug
-        transaction: trace
-        jdbc: trace
 ---

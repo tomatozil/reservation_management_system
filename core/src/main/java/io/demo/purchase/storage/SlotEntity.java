@@ -33,10 +33,6 @@ class SlotEntity extends BaseEntity {
     @Column(nullable = false)
     private Long price;
 
-    // LocalCache를 위한 비정규화
-    @Builder.Default
-    private Long total = 3L;
-
     public SlotEntity(long coachId, WorkoutType workoutType, LocalDateTime eventDatetime, long price) {
         this.coachId = coachId;
         this.workoutType = workoutType;
@@ -44,17 +40,12 @@ class SlotEntity extends BaseEntity {
         this.price = price;
     }
 
-//    booking 테이블에서 확인해볼 수 있는 정보인데 굳이 여기에까지?
-//    @ElementCollection
-//    @CollectionTable(name = "user", joinColumns = @JoinColumn(name = "user_id"))
-//    private List<Long> applier = new ArrayList<>();
-
     public SlotSimple toSlotSimple() {
         return new SlotSimple(id, workoutType, eventDatetime);
     }
 
     public Slot toSlot() {
-        return new Slot(id, coachId, workoutType, eventDatetime, price, total);
+        return new Slot(id, coachId, workoutType, eventDatetime, price);
     }
 
     public static SlotEntity of(long coachId, WorkoutType workoutType, LocalDateTime eventDatetime, long price) {

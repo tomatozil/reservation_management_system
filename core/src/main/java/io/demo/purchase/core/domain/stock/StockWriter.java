@@ -2,6 +2,7 @@ package io.demo.purchase.core.domain.stock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class StockWriter {
@@ -17,7 +18,7 @@ public class StockWriter {
         stockRepository.add(slotId, quantity);
     }
 
-    public void updateStock(Stock newStock) {
-        stockRepository.updateStock(newStock);
+    public void increaseStock(long stockId) {
+        stockRepository.increaseStock(stockId);
     }
 }
