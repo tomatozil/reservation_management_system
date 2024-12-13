@@ -12,49 +12,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @Slf4j
 @Component
 public class BookingWriter {
-    private final SlotReader slotReader;
     private final StockReader stockReader;
-    private final StockWriter stockWriter;
-    private final BookingReader bookingReader;
-    private final BookingRepository bookingRepository;
+    private final BookingWriterWithNamedLock bookingWriterWithNamedLock;
 
     @Autowired
     public BookingWriter(
             StockReader stockReader,
-            StockWriter stockWriter,
-            BookingReader bookingReader,
-            BookingRepository bookingRepository,
-            SlotReader slotReader, TransactionTemplate transactionTemplate, SlotReader slotReader1) {
+            BookingWriterWithNamedLock bookingWriterWithNamedLock) {
         this.stockReader = stockReader;
-        this.stockWriter = stockWriter;
-        this.bookingReader = bookingReader;
-        this.bookingRepository = bookingRepository;
-        this.slotReader = slotReader1;
+        this.bookingWriterWithNamedLock = bookingWriterWithNamedLock;
     }
 
-    @Transactional
+    @Transactional()
     public long append(long userId, long slotId) {
         try {
             stockReader.getNamedLock();
-
-            Slot slot = slotReader.find(slotId);
-            // 예약 내역 확인
-            Optional<Long> optBookingId = bookingReader.find(userId, slot.getId());
-            if (optBookingId.isPresent()) {
-                throw new AlertUserRetryException(CoreDomainErrorType.REQUEST_FAILED, "예약 내역이 존재합니다");
-            }
-
-            Stock stock = stockReader.find(slot.getId());
-
-            stockWriter.increaseStock(stock.getId());
-
-            return bookingRepository.add(userId, slotId);
+            return bookingWriterWithNamedLock.bookWithNamedLock(userId, slotId);
         } finally {
             stockReader.releaseNamedLock();
         }
